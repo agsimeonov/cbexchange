@@ -33,29 +33,36 @@ class WSClient(object):
     self.WS_URI = ws_uri or self.WS_URI
     self.WS_TYPE = ws_type or self.WS_TYPE
     self.WS_PRODUCT_ID = ws_product_id or self.WS_PRODUCT_ID
-  
+
   def __iter__(self):
     return self
-  
+
+  def __enter__(self):
+    self.connect()
+    return self
+
+  def __exit__(self):
+    self.disconnect()
+
   def __next__(self):
     """Iterator function for Python 3.
-      
+
     :returns: the next message in the sequence
     :rtype: dict
     :raises StopIteration: if the WebSocket is not connected
-      
+
     """
     next = self.receive()
     if next:
       return next
     raise StopIteration
-  
+
   # Iterator function for Python 2.
   next = __next__
-  
+
   def _to_float(self, message, key):
     """Converts a value in the message to float.
-      
+
     :param dict message: the input message
     :param str key: associated value will be converted to float
       
@@ -109,7 +116,7 @@ class WSClient(object):
   def _keep_alive_thread(self, parent_thread):
     """Used exclusively as a thread which keeps the WebSocket alive.
 
-    :param Thread parent_thread: the parent thread of this newly created thread
+    :param threading.Thread parent_thread: the parent thread
 
     """
     while(parent_thread.is_alive()):
