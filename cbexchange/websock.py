@@ -18,6 +18,27 @@ from websocket import create_connection
 class WSClient(object):
   """API Client for Coinbase Exchange WebSocket Feed.
 
+  This class starts in a disconnected state so make sure to connect before
+  attempting to receive any messages.
+
+  The client is iterable over the messages in the feed:
+
+  :Example:
+
+  >>> from cbexchange.websock import WSClient
+  >>> client = WSClient()
+  >>> client.connect()
+  >>> for message in client:
+  >>>   print(message)
+
+  The client supports the 'with' statment:
+
+  :Example:
+
+  >>> from cbexchange.websock import WSClient
+  >>> with WSClient() as client:
+  >>>   print(client.receive())
+
   :param str ws_uri:  WebSocket URI.
   :param str ws_type: https://docs.exchange.coinbase.com/#subscribe
   :param str ws_product_id: https://docs.exchange.coinbase.com/#subscribe
@@ -41,7 +62,7 @@ class WSClient(object):
     self.connect()
     return self
 
-  def __exit__(self):
+  def __exit__(self, type, value, traceback):
     self.disconnect()
 
   def __next__(self):
