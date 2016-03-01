@@ -7,15 +7,16 @@
 .. moduleauthor:: Alexander Simeonov <agsimeon@buffalo.edu>
 
 """
-from datetime import datetime
 from json import dumps, loads
 from threading import Lock, Thread
 from time import sleep
 
 from websocket import create_connection
 
+from cbexchange.client import APIClient
 
-class WSClient(object):
+
+class WSClient(APIClient):
   """API Client for Coinbase Exchange WebSocket Feed.
 
   This class starts in a disconnected state so make sure to connect before
@@ -88,15 +89,6 @@ class WSClient(object):
   # Iterator function for Python 2.
   next = __next__
 
-  def _to_float(self, message, key):
-    """Converts a value in the message to float.
-
-    :param dict message: the input message
-    :param str key: associated value will be converted to float
-      
-    """
-    message[key] = float(message[key])
-
   def _format_message(self, message):
     """Makes sure messages are Pythonic.
 
@@ -136,8 +128,7 @@ class WSClient(object):
     else:
       return message
 
-    message['time'] = datetime.strptime(message['time'],
-                                        '%Y-%m-%dT%H:%M:%S.%fZ')
+    self._to_datetime(message, 'time')
 
     return message
 
