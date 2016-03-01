@@ -16,7 +16,7 @@ class APIError(CBExchangeError):
   or status codes. The body will also contain a message parameter indicating the
   cause. Your language's http library should be configured to provide message
   bodies for non-2xx requests so that you can read the message field from the
-  body. Find more here: https://docs.exchange.coinbase.com/#errors
+  body. Find more here: `<https://docs.exchange.coinbase.com/#errors>`_
 
   :param requests.Response response: HTTP error response
 
