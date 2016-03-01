@@ -19,7 +19,12 @@ class WSClient(object):
   """API Client for Coinbase Exchange WebSocket Feed.
 
   This class starts in a disconnected state so make sure to connect before
-  attempting to receive any messages.
+  attempting to receive any messages.  When using the 'with' statement the
+  client connects and disconnects automatically.
+
+  Once connected the client starts a daemon thread which keeps the WebSocket 
+  alive using periodic pings. If the parent thread of the daemon dies or the 
+  WebSocket connection is somehow lost, the daemon will clean up and exit.
 
   The client is iterable over the messages in the feed:
 
