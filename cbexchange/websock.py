@@ -4,7 +4,7 @@
    Find more here: `<https://docs.exchange.coinbase.com/#websocket-feed>`_
 
 .. module:: websock
-   :synopsis: Websocket Feed
+   :synopsis: WebSocket Feed
 
 .. moduleauthor:: Alexander Simeonov <agsimeon@buffalo.edu>
 
@@ -49,8 +49,8 @@ class WSClient(APIClient):
   >>>   print(client.receive())
 
   :param str ws_uri:  WebSocket URI.
-  :param str ws_type: https://docs.exchange.coinbase.com/#subscribe
-  :param str ws_product_id: https://docs.exchange.coinbase.com/#subscribe
+  :param str ws_type: `<https://docs.exchange.coinbase.com/#subscribe>`_
+  :param str ws_product_id: `<https://docs.exchange.coinbase.com/#subscribe>`_
 
   """
   WS_URI = 'wss://ws-feed.exchange.coinbase.com'
