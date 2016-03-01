@@ -54,14 +54,13 @@ class WSClient(object):
   WS_TYPE = 'subscribe'
   WS_PRODUCT_ID = 'BTC-USD'
 
-  _ws = None
-  _thread = None
-  _lock = Lock()
-
   def __init__(self, ws_uri=None, ws_type=None, ws_product_id=None):
     self.WS_URI = ws_uri or self.WS_URI
     self.WS_TYPE = ws_type or self.WS_TYPE
     self.WS_PRODUCT_ID = ws_product_id or self.WS_PRODUCT_ID
+    self._ws = None
+    self._thread = None
+    self._lock = Lock()
 
   def __iter__(self):
     return self
