@@ -9,7 +9,7 @@
 """
 from datetime import datetime
 from json import dumps, loads
-from threading import current_thread, Thread
+from threading import Lock, Thread
 from time import sleep
 
 from websocket import create_connection
@@ -22,9 +22,10 @@ class WSClient(object):
   attempting to receive any messages.  When using the 'with' statement the
   client connects and disconnects automatically.
 
-  Once connected the client starts a daemon thread which keeps the WebSocket 
-  alive using periodic pings. If the parent thread of the daemon dies or the 
-  WebSocket connection is somehow lost, the daemon will clean up and exit.
+  Once connected the client starts a thread which keeps the WebSocket alive 
+  using periodic pings. There will be only one keep alive thread per client
+  instance. If the WebSocket connection is somehow lost, the keep alive thread 
+  will clean up and exit.
 
   The client is iterable over the messages in the feed:
 
@@ -54,6 +55,8 @@ class WSClient(object):
   WS_PRODUCT_ID = 'BTC-USD'
 
   _ws = None
+  _thread = None
+  _lock = Lock()
 
   def __init__(self, ws_uri=None, ws_type=None, ws_product_id=None):
     self.WS_URI = ws_uri or self.WS_URI
@@ -139,21 +142,17 @@ class WSClient(object):
 
     return message
 
-  def _keep_alive_thread(self, parent_thread):
-    """Used exclusively as a thread which keeps the WebSocket alive.
-
-    :param threading.Thread parent_thread: the parent thread
-
-    """
-    while(parent_thread.is_alive()):
-      if self.connected():
-        self._ws.ping()
-        sleep(30)
-      else:
-        break
-
-    if self.connected():
-      self.disconnect()
+  def _keep_alive_thread(self):
+    """Used exclusively as a thread which keeps the WebSocket alive."""
+    while True:
+      with self._lock:
+        if self.connected():
+          self._ws.ping()
+        else:
+          self.disconnect()
+          self._thread = None
+          return
+      sleep(30)
 
   def connect(self):
     """Connects and subscribes to the WebSocket Feed."""
@@ -164,9 +163,12 @@ class WSClient(object):
         'product_id':self.WS_PRODUCT_ID
       }
       self._ws.send(dumps(message))
-      thread = Thread(target=self._keep_alive_thread, args=[current_thread()])
-      thread.daemon = True
-      thread.start()
+
+      # There will be only one keep alive thread per client instance
+      with self._lock:
+        if not self._thread:
+          thread = Thread(target=self._keep_alive_thread, args=[])
+          thread.start()
 
   def disconnect(self):
     """Disconnects from the WebSocket Feed."""
