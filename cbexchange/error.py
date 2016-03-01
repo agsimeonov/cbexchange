@@ -6,7 +6,7 @@
 .. moduleauthor:: Alexander Simeonov <agsimeon@buffalo.edu>
 
 """
-import requests
+
 
 class CBExchangeError(Exception):
   """All Coinbase Exchange Library related errors extend this class."""
