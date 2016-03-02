@@ -99,40 +99,7 @@ class WSClient(APIClient):
     :rtype: dict
 
     """
-    message = loads(message)
-
-    if message['type'] == 'received':
-      if message['order_type'] == 'limit':
-        self._to_float(message, 'size')
-        self._to_float(message, 'price')
-      else:
-        if 'funds' in message:
-          self._to_float(message, 'funds')
-    elif message['type'] == 'open':
-      self._to_float(message, 'price')
-      self._to_float(message, 'remaining_size')
-    elif message['type'] == 'done':
-      if message['order_type'] == 'limit':
-        self._to_float(message, 'price')
-        self._to_float(message, 'remaining_size')
-    elif message['type'] == 'match':
-      self._to_float(message, 'size')
-      self._to_float(message, 'price')
-    elif message['type'] == 'change':
-      if message['price']:
-        self._to_float(message, 'price')
-      if 'new_size' in message:
-        self._to_float(message, 'new_size')
-        self._to_float(message, 'old_size')
-      else:
-        self._to_float(message, 'new_funds')
-        self._to_float(message, 'old_funds')
-    else:
-      return message
-
-    self._to_datetime(message, 'time')
-
-    return message
+    return loads(message)
 
   def _keep_alive_thread(self):
     """Used exclusively as a thread which keeps the WebSocket alive."""

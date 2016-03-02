@@ -16,23 +16,6 @@ from cbexchange.error import get_api_error
 
 class APIClient(object):
   """Base class of all client in the Coinbase Exchange Library."""
-  def _to_float(self, message, key):
-    """Converts a value in the message to float.
-
-    :param dict message: the input message
-    :param str key: associated value will be converted to float
-
-    """
-    message[key] = float(message[key])
-
-  def _to_datetime(self, message, key):
-    """Converts a value in the message to datetime.datetime.
-
-    :param dict message: the input message
-    :param str key: associated value will be converted to datetime.datetime
-
-    """
-    message[key] = datetime.strptime(message[key], '%Y-%m-%dT%H:%M:%S.%fZ')
 
 class RESTClient(APIClient):
   """Base class of all clients using the REST API.
@@ -52,6 +35,21 @@ class RESTClient(APIClient):
 
     """
     return urljoin(self.API_URI, '/'.join(map(quote, parts)))
+  
+  def _format_iso_time(self, time):
+    """Makes sure we have proper ISO 8601 time.
+
+    :param time: either already ISO 8601 a string or datetime.datetime
+    :returns: ISO 8601 time
+    :rtype: str
+
+    """
+    if isinstance(time, str):
+      return time
+    elif isinstance(time, datetime):
+      return time.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
+    else:
+      return None
 
   def _handle_response(self, response):
     """Returns the given response or raises an APIError for non-2xx responses.
