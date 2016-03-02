@@ -79,6 +79,28 @@ class RESTClient(APIClient):
     """
     return self._request('get', *args, **kwargs)
 
+  def _post(self, *args, **kwargs):
+    """Performs HTTP POST requests.
+
+    :param args: arguments
+    :param kwargs: argument keywords
+    :returns: requested data
+    :raises APIError: for non-2xx responses
+
+    """
+    return self._request('post', *args, **kwargs)
+
+  def _delete(self, *args, **kwargs):
+    """Performs HTTP POST requests.
+
+    :param args: arguments
+    :param kwargs: argument keywords
+    :returns: requested data
+    :raises APIError: for non-2xx responses
+
+    """
+    return self._request('post', *args, **kwargs)
+
 class PaginationClient(RESTClient):
   """Handles Pagination `<https://docs.exchange.coinbase.com/#pagination>`_
 
