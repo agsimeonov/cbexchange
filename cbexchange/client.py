@@ -116,7 +116,7 @@ class PaginationClient(RESTClient):
 
     """
     next = self.endpoint()
-    if next:
+    if next is not None:
       return next
     raise StopIteration
 
