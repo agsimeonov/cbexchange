@@ -1,7 +1,7 @@
 """The WebSocket Feed provides real-time market data updates for orders and
-   trades. 
+trades. 
    
-   Find more here: `<https://docs.exchange.coinbase.com/#websocket-feed>`_
+Find more here: `<https://docs.exchange.coinbase.com/#websocket-feed>`_
 
 .. module:: websock
    :synopsis: WebSocket Feed

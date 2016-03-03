@@ -1,8 +1,7 @@
 """Private endpoints are available for order management, and account management.
-   Every private request must be signed using the described authentication 
-   scheme.
+Every private request must be signed using the described authentication scheme.
 
-   Find more here: `<https://docs.exchange.coinbase.com/#private>`_
+Find more here: `<https://docs.exchange.coinbase.com/#private>`_
 
 .. module:: private
    :synopsis: Private API

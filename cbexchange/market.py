@@ -1,7 +1,7 @@
-"""The Market Data API is an unauthenticated set of endpoints for retrieving 
-   market data. These endpoints provide snapshots of market data. 
-   
-   Find more here: `<https://docs.exchange.coinbase.com/#market-data>`_
+"""The Market Data API is an unauthenticated set of endpoints for retrieving
+market data. These endpoints provide snapshots of market data. 
+
+Find more here: `<https://docs.exchange.coinbase.com/#market-data>`_
 
 .. module:: market
    :synopsis: Market Data API

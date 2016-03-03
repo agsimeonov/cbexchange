@@ -1,8 +1,8 @@
-"""The websocket feed provides real-time updates on orders and trades. These 
-   updates can be applied on to a level 2 or 3 order book snapshot to maintain 
-   an accurate and up-to-date copy of the exchange order book.
+"""The websocket feed provides real-time updates on orders and trades. These
+updates can be applied on to a level 2 or 3 order book snapshot to maintain an 
+accurate and up-to-date copy of the exchange order book.
 
-   Find more here: `<https://docs.exchange.coinbase.com/#real-time-order-book>`_
+Find more here: `<https://docs.exchange.coinbase.com/#real-time-order-book>`_
 
 .. module:: orderbook
    :synopsis: Real-Time Order Book
