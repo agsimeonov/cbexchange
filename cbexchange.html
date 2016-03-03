@@ -272,6 +272,11 @@
 </tr>
 </tbody>
 </table>
+<dl class="attribute">
+<dt id="cbexchange.client.RESTClient.API_URI">
+<code class="descname">API_URI</code><em class="property"> = 'https://api.exchange.coinbase.com'</em><a class="headerlink" href="#cbexchange.client.RESTClient.API_URI" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </dd></dl>
 
 </div>
@@ -297,10 +302,40 @@ body. Find more here: <a class="reference external" href="https://docs.exchange.
 </dd></dl>
 
 <dl class="exception">
+<dt id="cbexchange.error.BadRequestError">
+<em class="property">exception </em><code class="descclassname">cbexchange.error.</code><code class="descname">BadRequestError</code><span class="sig-paren">(</span><em>response</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cbexchange/error.html#BadRequestError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cbexchange.error.BadRequestError" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="exception">
 <dt id="cbexchange.error.CBExchangeError">
 <em class="property">exception </em><code class="descclassname">cbexchange.error.</code><code class="descname">CBExchangeError</code><a class="reference internal" href="_modules/cbexchange/error.html#CBExchangeError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cbexchange.error.CBExchangeError" title="Permalink to this definition">¶</a></dt>
 <dd><p>All Coinbase Exchange Library related errors extend this class.</p>
 </dd></dl>
+
+<dl class="exception">
+<dt id="cbexchange.error.ForbiddenError">
+<em class="property">exception </em><code class="descclassname">cbexchange.error.</code><code class="descname">ForbiddenError</code><span class="sig-paren">(</span><em>response</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cbexchange/error.html#ForbiddenError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cbexchange.error.ForbiddenError" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="exception">
+<dt id="cbexchange.error.InternalServerError">
+<em class="property">exception </em><code class="descclassname">cbexchange.error.</code><code class="descname">InternalServerError</code><span class="sig-paren">(</span><em>response</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cbexchange/error.html#InternalServerError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cbexchange.error.InternalServerError" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="exception">
+<dt id="cbexchange.error.NotFoundError">
+<em class="property">exception </em><code class="descclassname">cbexchange.error.</code><code class="descname">NotFoundError</code><span class="sig-paren">(</span><em>response</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cbexchange/error.html#NotFoundError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cbexchange.error.NotFoundError" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="exception">
+<dt id="cbexchange.error.TooManyRequestsError">
+<em class="property">exception </em><code class="descclassname">cbexchange.error.</code><code class="descname">TooManyRequestsError</code><span class="sig-paren">(</span><em>response</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cbexchange/error.html#TooManyRequestsError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cbexchange.error.TooManyRequestsError" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="exception">
+<dt id="cbexchange.error.UnauthorizedError">
+<em class="property">exception </em><code class="descclassname">cbexchange.error.</code><code class="descname">UnauthorizedError</code><span class="sig-paren">(</span><em>response</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cbexchange/error.html#UnauthorizedError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cbexchange.error.UnauthorizedError" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="function">
 <dt id="cbexchange.error.get_api_error">
@@ -323,28 +358,104 @@ body. Find more here: <a class="reference external" href="https://docs.exchange.
 </div>
 <div class="section" id="module-cbexchange.market">
 <span id="market"></span><h2>market<a class="headerlink" href="#module-cbexchange.market" title="Permalink to this headline">¶</a></h2>
-<dl class="docutils">
-<dt>The Market Data API is an unauthenticated set of endpoints for retrieving </dt>
-<dd><p class="first">market data. These endpoints provide snapshots of market data.</p>
-<p class="last">Find more here: <a class="reference external" href="https://docs.exchange.coinbase.com/#market-data">https://docs.exchange.coinbase.com/#market-data</a></p>
-</dd>
-</dl>
+<p>The Market Data API is an unauthenticated set of endpoints for retrieving
+market data. These endpoints provide snapshots of market data.</p>
+<p>Find more here: <a class="reference external" href="https://docs.exchange.coinbase.com/#market-data">https://docs.exchange.coinbase.com/#market-data</a></p>
 <span class="target" id="module-market"></span><dl class="class">
 <dt id="cbexchange.market.GetTradesPagination">
 <em class="property">class </em><code class="descclassname">cbexchange.market.</code><code class="descname">GetTradesPagination</code><span class="sig-paren">(</span><em>product_id='BTC-USD'</em>, <em>api_uri=None</em>, <em>before=True</em>, <em>limit=None</em>, <em>cursor=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cbexchange/market.html#GetTradesPagination"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cbexchange.market.GetTradesPagination" title="Permalink to this definition">¶</a></dt>
 <dd><p><a class="reference external" href="https://docs.exchange.coinbase.com/#get-trades">https://docs.exchange.coinbase.com/#get-trades</a></p>
+<dl class="method">
+<dt id="cbexchange.market.GetTradesPagination.endpoint">
+<code class="descname">endpoint</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cbexchange/market.html#GetTradesPagination.endpoint"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cbexchange.market.GetTradesPagination.endpoint" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </dd></dl>
+
+<dl class="class">
+<dt id="cbexchange.market.MarketClient">
+<em class="property">class </em><code class="descclassname">cbexchange.market.</code><code class="descname">MarketClient</code><span class="sig-paren">(</span><em>api_uri=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cbexchange/market.html#MarketClient"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cbexchange.market.MarketClient" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="method">
+<dt id="cbexchange.market.MarketClient.get_currencies">
+<code class="descname">get_currencies</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cbexchange/market.html#MarketClient.get_currencies"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cbexchange.market.MarketClient.get_currencies" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="https://docs.exchange.coinbase.com/#get-currencies">https://docs.exchange.coinbase.com/#get-currencies</a></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cbexchange.market.MarketClient.get_historic_trades">
+<code class="descname">get_historic_trades</code><span class="sig-paren">(</span><em>start</em>, <em>end</em>, <em>granularity</em>, <em>product_id='BTC-USD'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cbexchange/market.html#MarketClient.get_historic_trades"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cbexchange.market.MarketClient.get_historic_trades" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="https://docs.exchange.coinbase.com/#get-historic-rates">https://docs.exchange.coinbase.com/#get-historic-rates</a></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>start</strong> &#8211; either datetime.datetime or str in ISO 8601</li>
+<li><strong>end</strong> &#8211; either datetime.datetime or str in ISO 8601</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2">Pram int granularity:</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body"><p class="first">desired timeslice in seconds</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">desired data</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="cbexchange.market.MarketClient.get_product_order_book">
+<code class="descname">get_product_order_book</code><span class="sig-paren">(</span><em>level=None</em>, <em>product_id='BTC-USD'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cbexchange/market.html#MarketClient.get_product_order_book"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cbexchange.market.MarketClient.get_product_order_book" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="https://docs.exchange.coinbase.com/#get-product-order-book">https://docs.exchange.coinbase.com/#get-product-order-book</a></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cbexchange.market.MarketClient.get_product_ticker">
+<code class="descname">get_product_ticker</code><span class="sig-paren">(</span><em>product_id='BTC-USD'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cbexchange/market.html#MarketClient.get_product_ticker"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cbexchange.market.MarketClient.get_product_ticker" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="https://docs.exchange.coinbase.com/#get-product-ticker">https://docs.exchange.coinbase.com/#get-product-ticker</a></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cbexchange.market.MarketClient.get_products">
+<code class="descname">get_products</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cbexchange/market.html#MarketClient.get_products"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cbexchange.market.MarketClient.get_products" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="https://docs.exchange.coinbase.com/#get-products">https://docs.exchange.coinbase.com/#get-products</a></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cbexchange.market.MarketClient.get_stats">
+<code class="descname">get_stats</code><span class="sig-paren">(</span><em>product_id='BTC-USD'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cbexchange/market.html#MarketClient.get_stats"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cbexchange.market.MarketClient.get_stats" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="https://docs.exchange.coinbase.com/#get-24hr-stats">https://docs.exchange.coinbase.com/#get-24hr-stats</a></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cbexchange.market.MarketClient.get_time">
+<code class="descname">get_time</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cbexchange/market.html#MarketClient.get_time"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cbexchange.market.MarketClient.get_time" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="https://docs.exchange.coinbase.com/#time">https://docs.exchange.coinbase.com/#time</a></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cbexchange.market.MarketClient.get_trades">
+<code class="descname">get_trades</code><span class="sig-paren">(</span><em>product_id='BTC-USD'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cbexchange/market.html#MarketClient.get_trades"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cbexchange.market.MarketClient.get_trades" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="https://docs.exchange.coinbase.com/#get-trades">https://docs.exchange.coinbase.com/#get-trades</a></p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="cbexchange.market.MarketPaginationClient">
+<em class="property">class </em><code class="descclassname">cbexchange.market.</code><code class="descname">MarketPaginationClient</code><span class="sig-paren">(</span><em>api_uri=None</em>, <em>before=True</em>, <em>limit=None</em>, <em>cursor=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cbexchange/market.html#MarketPaginationClient"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cbexchange.market.MarketPaginationClient" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 </div>
 <div class="section" id="module-cbexchange.orderbook">
 <span id="orderbook"></span><h2>orderbook<a class="headerlink" href="#module-cbexchange.orderbook" title="Permalink to this headline">¶</a></h2>
-<dl class="docutils">
-<dt>The websocket feed provides real-time updates on orders and trades. These </dt>
-<dd><p class="first">updates can be applied on to a level 2 or 3 order book snapshot to maintain 
-an accurate and up-to-date copy of the exchange order book.</p>
-<p class="last">Find more here: <a class="reference external" href="https://docs.exchange.coinbase.com/#real-time-order-book">https://docs.exchange.coinbase.com/#real-time-order-book</a></p>
-</dd>
-</dl>
+<p>The websocket feed provides real-time updates on orders and trades. These
+updates can be applied on to a level 2 or 3 order book snapshot to maintain an 
+accurate and up-to-date copy of the exchange order book.</p>
+<p>Find more here: <a class="reference external" href="https://docs.exchange.coinbase.com/#real-time-order-book">https://docs.exchange.coinbase.com/#real-time-order-book</a></p>
 <span class="target" id="module-orderbook"></span><dl class="class">
 <dt id="cbexchange.orderbook.OrderBook">
 <em class="property">class </em><code class="descclassname">cbexchange.orderbook.</code><code class="descname">OrderBook</code><span class="sig-paren">(</span><em>ws_uri=None</em>, <em>api_uri=None</em>, <em>product_id=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cbexchange/orderbook.html#OrderBook"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cbexchange.orderbook.OrderBook" title="Permalink to this definition">¶</a></dt>
@@ -384,6 +495,21 @@ Supports the &#8216;with&#8217; statment.</p>
 </tr>
 </tbody>
 </table>
+<dl class="attribute">
+<dt id="cbexchange.orderbook.OrderBook.API_URI">
+<code class="descname">API_URI</code><em class="property"> = 'https://api.exchange.coinbase.com'</em><a class="headerlink" href="#cbexchange.orderbook.OrderBook.API_URI" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="cbexchange.orderbook.OrderBook.PRODUCT_ID">
+<code class="descname">PRODUCT_ID</code><em class="property"> = 'BTC-USD'</em><a class="headerlink" href="#cbexchange.orderbook.OrderBook.PRODUCT_ID" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="cbexchange.orderbook.OrderBook.WS_URI">
+<code class="descname">WS_URI</code><em class="property"> = 'wss://ws-feed.exchange.coinbase.com'</em><a class="headerlink" href="#cbexchange.orderbook.OrderBook.WS_URI" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 <dl class="method">
 <dt id="cbexchange.orderbook.OrderBook.end">
 <code class="descname">end</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cbexchange/orderbook.html#OrderBook.end"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cbexchange.orderbook.OrderBook.end" title="Permalink to this definition">¶</a></dt>
@@ -423,17 +549,23 @@ Supports the &#8216;with&#8217; statment.</p>
 </div>
 <div class="section" id="module-cbexchange.private">
 <span id="private"></span><h2>private<a class="headerlink" href="#module-cbexchange.private" title="Permalink to this headline">¶</a></h2>
-<dl class="docutils">
-<dt>Private endpoints are available for order management, and account management.</dt>
-<dd><p class="first">Every private request must be signed using the described authentication 
-scheme.</p>
-<p class="last">Find more here: <a class="reference external" href="https://docs.exchange.coinbase.com/#private">https://docs.exchange.coinbase.com/#private</a></p>
-</dd>
-</dl>
+<p>Private endpoints are available for order management, and account management.
+Every private request must be signed using the described authentication scheme.</p>
+<p>Find more here: <a class="reference external" href="https://docs.exchange.coinbase.com/#private">https://docs.exchange.coinbase.com/#private</a></p>
 <span class="target" id="module-private"></span><dl class="class">
+<dt id="cbexchange.private.AccountPagination">
+<em class="property">class </em><code class="descclassname">cbexchange.private.</code><code class="descname">AccountPagination</code><span class="sig-paren">(</span><em>account_id</em>, <em>auth</em>, <em>api_uri=None</em>, <em>before=True</em>, <em>limit=None</em>, <em>cursor=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cbexchange/private.html#AccountPagination"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cbexchange.private.AccountPagination" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="class">
 <dt id="cbexchange.private.CancelAllPagination">
 <em class="property">class </em><code class="descclassname">cbexchange.private.</code><code class="descname">CancelAllPagination</code><span class="sig-paren">(</span><em>product_id</em>, <em>auth</em>, <em>api_uri=None</em>, <em>before=True</em>, <em>limit=None</em>, <em>cursor=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cbexchange/private.html#CancelAllPagination"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cbexchange.private.CancelAllPagination" title="Permalink to this definition">¶</a></dt>
 <dd><p><a class="reference external" href="https://docs.exchange.coinbase.com/#cancel-all">https://docs.exchange.coinbase.com/#cancel-all</a></p>
+<dl class="method">
+<dt id="cbexchange.private.CancelAllPagination.endpoint">
+<code class="descname">endpoint</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cbexchange/private.html#CancelAllPagination.endpoint"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cbexchange.private.CancelAllPagination.endpoint" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </dd></dl>
 
 <dl class="class">
@@ -459,30 +591,55 @@ scheme.</p>
 <dt id="cbexchange.private.GetAccountHistoryPagination">
 <em class="property">class </em><code class="descclassname">cbexchange.private.</code><code class="descname">GetAccountHistoryPagination</code><span class="sig-paren">(</span><em>account_id</em>, <em>auth</em>, <em>api_uri=None</em>, <em>before=True</em>, <em>limit=None</em>, <em>cursor=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cbexchange/private.html#GetAccountHistoryPagination"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cbexchange.private.GetAccountHistoryPagination" title="Permalink to this definition">¶</a></dt>
 <dd><p><a class="reference external" href="https://docs.exchange.coinbase.com/#get-account-history">https://docs.exchange.coinbase.com/#get-account-history</a></p>
+<dl class="method">
+<dt id="cbexchange.private.GetAccountHistoryPagination.endpoint">
+<code class="descname">endpoint</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cbexchange/private.html#GetAccountHistoryPagination.endpoint"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cbexchange.private.GetAccountHistoryPagination.endpoint" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </dd></dl>
 
 <dl class="class">
 <dt id="cbexchange.private.GetHoldsPagination">
 <em class="property">class </em><code class="descclassname">cbexchange.private.</code><code class="descname">GetHoldsPagination</code><span class="sig-paren">(</span><em>account_id</em>, <em>auth</em>, <em>api_uri=None</em>, <em>before=True</em>, <em>limit=None</em>, <em>cursor=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cbexchange/private.html#GetHoldsPagination"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cbexchange.private.GetHoldsPagination" title="Permalink to this definition">¶</a></dt>
 <dd><p><a class="reference external" href="https://docs.exchange.coinbase.com/#get-holds">https://docs.exchange.coinbase.com/#get-holds</a></p>
+<dl class="method">
+<dt id="cbexchange.private.GetHoldsPagination.endpoint">
+<code class="descname">endpoint</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cbexchange/private.html#GetHoldsPagination.endpoint"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cbexchange.private.GetHoldsPagination.endpoint" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </dd></dl>
 
 <dl class="class">
 <dt id="cbexchange.private.ListAccountsPagination">
 <em class="property">class </em><code class="descclassname">cbexchange.private.</code><code class="descname">ListAccountsPagination</code><span class="sig-paren">(</span><em>auth</em>, <em>api_uri=None</em>, <em>before=True</em>, <em>limit=None</em>, <em>cursor=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cbexchange/private.html#ListAccountsPagination"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cbexchange.private.ListAccountsPagination" title="Permalink to this definition">¶</a></dt>
 <dd><p><a class="reference external" href="https://docs.exchange.coinbase.com/#selecting-a-timestamp">https://docs.exchange.coinbase.com/#selecting-a-timestamp</a></p>
+<dl class="method">
+<dt id="cbexchange.private.ListAccountsPagination.endpoint">
+<code class="descname">endpoint</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cbexchange/private.html#ListAccountsPagination.endpoint"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cbexchange.private.ListAccountsPagination.endpoint" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </dd></dl>
 
 <dl class="class">
 <dt id="cbexchange.private.ListFillsPagination">
 <em class="property">class </em><code class="descclassname">cbexchange.private.</code><code class="descname">ListFillsPagination</code><span class="sig-paren">(</span><em>auth</em>, <em>api_uri=None</em>, <em>before=True</em>, <em>limit=None</em>, <em>cursor=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cbexchange/private.html#ListFillsPagination"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cbexchange.private.ListFillsPagination" title="Permalink to this definition">¶</a></dt>
 <dd><p><a class="reference external" href="https://docs.exchange.coinbase.com/#list-fills">https://docs.exchange.coinbase.com/#list-fills</a></p>
+<dl class="method">
+<dt id="cbexchange.private.ListFillsPagination.endpoint">
+<code class="descname">endpoint</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cbexchange/private.html#ListFillsPagination.endpoint"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cbexchange.private.ListFillsPagination.endpoint" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </dd></dl>
 
 <dl class="class">
 <dt id="cbexchange.private.ListOrdersPagination">
 <em class="property">class </em><code class="descclassname">cbexchange.private.</code><code class="descname">ListOrdersPagination</code><span class="sig-paren">(</span><em>auth</em>, <em>status=None</em>, <em>api_uri=None</em>, <em>before=True</em>, <em>limit=None</em>, <em>cursor=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cbexchange/private.html#ListOrdersPagination"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cbexchange.private.ListOrdersPagination" title="Permalink to this definition">¶</a></dt>
 <dd><p><a class="reference external" href="https://docs.exchange.coinbase.com/#list-orders">https://docs.exchange.coinbase.com/#list-orders</a></p>
+<dl class="method">
+<dt id="cbexchange.private.ListOrdersPagination.endpoint">
+<code class="descname">endpoint</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cbexchange/private.html#ListOrdersPagination.endpoint"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cbexchange.private.ListOrdersPagination.endpoint" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </dd></dl>
 
 <dl class="class">
@@ -599,15 +756,17 @@ scheme.</p>
 
 </dd></dl>
 
+<dl class="class">
+<dt id="cbexchange.private.PrivatePaginationClient">
+<em class="property">class </em><code class="descclassname">cbexchange.private.</code><code class="descname">PrivatePaginationClient</code><span class="sig-paren">(</span><em>auth</em>, <em>api_uri=None</em>, <em>before=True</em>, <em>limit=None</em>, <em>cursor=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cbexchange/private.html#PrivatePaginationClient"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cbexchange.private.PrivatePaginationClient" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </div>
 <div class="section" id="module-cbexchange.websock">
 <span id="websock"></span><h2>websock<a class="headerlink" href="#module-cbexchange.websock" title="Permalink to this headline">¶</a></h2>
-<dl class="docutils">
-<dt>The WebSocket Feed provides real-time market data updates for orders and</dt>
-<dd><p class="first">trades.</p>
-<p class="last">Find more here: <a class="reference external" href="https://docs.exchange.coinbase.com/#websocket-feed">https://docs.exchange.coinbase.com/#websocket-feed</a></p>
-</dd>
-</dl>
+<p>The WebSocket Feed provides real-time market data updates for orders and
+trades.</p>
+<p>Find more here: <a class="reference external" href="https://docs.exchange.coinbase.com/#websocket-feed">https://docs.exchange.coinbase.com/#websocket-feed</a></p>
 <span class="target" id="module-websock"></span><dl class="class">
 <dt id="cbexchange.websock.WSClient">
 <em class="property">class </em><code class="descclassname">cbexchange.websock.</code><code class="descname">WSClient</code><span class="sig-paren">(</span><em>ws_uri=None</em>, <em>ws_type=None</em>, <em>ws_product_id=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cbexchange/websock.html#WSClient"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cbexchange.websock.WSClient" title="Permalink to this definition">¶</a></dt>
@@ -663,6 +822,21 @@ will clean up and exit.</p>
 </tr>
 </tbody>
 </table>
+<dl class="attribute">
+<dt id="cbexchange.websock.WSClient.WS_PRODUCT_ID">
+<code class="descname">WS_PRODUCT_ID</code><em class="property"> = 'BTC-USD'</em><a class="headerlink" href="#cbexchange.websock.WSClient.WS_PRODUCT_ID" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="cbexchange.websock.WSClient.WS_TYPE">
+<code class="descname">WS_TYPE</code><em class="property"> = 'subscribe'</em><a class="headerlink" href="#cbexchange.websock.WSClient.WS_TYPE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="cbexchange.websock.WSClient.WS_URI">
+<code class="descname">WS_URI</code><em class="property"> = 'wss://ws-feed.exchange.coinbase.com'</em><a class="headerlink" href="#cbexchange.websock.WSClient.WS_URI" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 <dl class="method">
 <dt id="cbexchange.websock.WSClient.connect">
 <code class="descname">connect</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cbexchange/websock.html#WSClient.connect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cbexchange.websock.WSClient.connect" title="Permalink to this definition">¶</a></dt>

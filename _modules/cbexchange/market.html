@@ -127,10 +127,10 @@
            <div itemprop="articleBody">
             
   <h1>Source code for cbexchange.market</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;The Market Data API is an unauthenticated set of endpoints for retrieving </span>
-<span class="sd">   market data. These endpoints provide snapshots of market data. </span>
-<span class="sd">   </span>
-<span class="sd">   Find more here: `&lt;https://docs.exchange.coinbase.com/#market-data&gt;`_</span>
+<span></span><span class="sd">&quot;&quot;&quot;The Market Data API is an unauthenticated set of endpoints for retrieving</span>
+<span class="sd">market data. These endpoints provide snapshots of market data. </span>
+
+<span class="sd">Find more here: `&lt;https://docs.exchange.coinbase.com/#market-data&gt;`_</span>
 
 <span class="sd">.. module:: market</span>
 <span class="sd">   :synopsis: Market Data API</span>
@@ -148,7 +148,7 @@
 <span class="n">LEVEL_FULL</span> <span class="o">=</span> <span class="mi">3</span>
 
 
-<span class="k">class</span> <span class="nc">MarketClient</span><span class="p">(</span><span class="n">RESTClient</span><span class="p">):</span>
+<div class="viewcode-block" id="MarketClient"><a class="viewcode-back" href="../../cbexchange.html#cbexchange.market.MarketClient">[docs]</a><span class="k">class</span> <span class="nc">MarketClient</span><span class="p">(</span><span class="n">RESTClient</span><span class="p">):</span>
   <span class="k">def</span> <span class="nf">_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method</span><span class="p">,</span> <span class="o">*</span><span class="n">relative_path_parts</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Sends an HTTP request to the REST API and receives the requested data.</span>
 
@@ -163,23 +163,23 @@
     <span class="n">response</span> <span class="o">=</span> <span class="n">get</span><span class="p">(</span><span class="n">uri</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;params&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">))</span>
     <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_handle_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
 
-  <span class="k">def</span> <span class="nf">get_products</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="MarketClient.get_products"><a class="viewcode-back" href="../../cbexchange.html#cbexchange.market.MarketClient.get_products">[docs]</a>  <span class="k">def</span> <span class="nf">get_products</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;`&lt;https://docs.exchange.coinbase.com/#get-products&gt;`_&quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get</span><span class="p">(</span><span class="s1">&#39;products&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get</span><span class="p">(</span><span class="s1">&#39;products&#39;</span><span class="p">)</span></div>
 
-  <span class="k">def</span> <span class="nf">get_product_order_book</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">product_id</span><span class="o">=</span><span class="s1">&#39;BTC-USD&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="MarketClient.get_product_order_book"><a class="viewcode-back" href="../../cbexchange.html#cbexchange.market.MarketClient.get_product_order_book">[docs]</a>  <span class="k">def</span> <span class="nf">get_product_order_book</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">product_id</span><span class="o">=</span><span class="s1">&#39;BTC-USD&#39;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;`&lt;https://docs.exchange.coinbase.com/#get-product-order-book&gt;`_&quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get</span><span class="p">(</span><span class="s1">&#39;products&#39;</span><span class="p">,</span> <span class="n">product_id</span><span class="p">,</span> <span class="s1">&#39;book&#39;</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;level&#39;</span><span class="p">:</span><span class="n">level</span><span class="p">})</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get</span><span class="p">(</span><span class="s1">&#39;products&#39;</span><span class="p">,</span> <span class="n">product_id</span><span class="p">,</span> <span class="s1">&#39;book&#39;</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;level&#39;</span><span class="p">:</span><span class="n">level</span><span class="p">})</span></div>
 
-  <span class="k">def</span> <span class="nf">get_product_ticker</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">product_id</span><span class="o">=</span><span class="s1">&#39;BTC-USD&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="MarketClient.get_product_ticker"><a class="viewcode-back" href="../../cbexchange.html#cbexchange.market.MarketClient.get_product_ticker">[docs]</a>  <span class="k">def</span> <span class="nf">get_product_ticker</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">product_id</span><span class="o">=</span><span class="s1">&#39;BTC-USD&#39;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;`&lt;https://docs.exchange.coinbase.com/#get-product-ticker&gt;`_&quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get</span><span class="p">(</span><span class="s1">&#39;products&#39;</span><span class="p">,</span> <span class="n">product_id</span><span class="p">,</span> <span class="s1">&#39;ticker&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get</span><span class="p">(</span><span class="s1">&#39;products&#39;</span><span class="p">,</span> <span class="n">product_id</span><span class="p">,</span> <span class="s1">&#39;ticker&#39;</span><span class="p">)</span></div>
 
-  <span class="k">def</span> <span class="nf">get_trades</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">product_id</span><span class="o">=</span><span class="s1">&#39;BTC-USD&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="MarketClient.get_trades"><a class="viewcode-back" href="../../cbexchange.html#cbexchange.market.MarketClient.get_trades">[docs]</a>  <span class="k">def</span> <span class="nf">get_trades</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">product_id</span><span class="o">=</span><span class="s1">&#39;BTC-USD&#39;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;`&lt;https://docs.exchange.coinbase.com/#get-trades&gt;`_&quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get</span><span class="p">(</span><span class="s1">&#39;products&#39;</span><span class="p">,</span> <span class="n">product_id</span><span class="p">,</span> <span class="s1">&#39;trades&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get</span><span class="p">(</span><span class="s1">&#39;products&#39;</span><span class="p">,</span> <span class="n">product_id</span><span class="p">,</span> <span class="s1">&#39;trades&#39;</span><span class="p">)</span></div>
 
-  <span class="k">def</span> <span class="nf">get_historic_trades</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="n">granularity</span><span class="p">,</span> <span class="n">product_id</span><span class="o">=</span><span class="s1">&#39;BTC-USD&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="MarketClient.get_historic_trades"><a class="viewcode-back" href="../../cbexchange.html#cbexchange.market.MarketClient.get_historic_trades">[docs]</a>  <span class="k">def</span> <span class="nf">get_historic_trades</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="n">granularity</span><span class="p">,</span> <span class="n">product_id</span><span class="o">=</span><span class="s1">&#39;BTC-USD&#39;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;`&lt;https://docs.exchange.coinbase.com/#get-historic-rates&gt;`_</span>
 
 <span class="sd">    :param start: either datetime.datetime or str in ISO 8601</span>
@@ -193,21 +193,21 @@
       <span class="s1">&#39;end&#39;</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">_format_iso_time</span><span class="p">(</span><span class="n">end</span><span class="p">),</span>
       <span class="s1">&#39;granularity&#39;</span><span class="p">:</span><span class="n">granularity</span>
     <span class="p">}</span>
-    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get</span><span class="p">(</span><span class="s1">&#39;products&#39;</span><span class="p">,</span> <span class="n">product_id</span><span class="p">,</span> <span class="s1">&#39;candles&#39;</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">)</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get</span><span class="p">(</span><span class="s1">&#39;products&#39;</span><span class="p">,</span> <span class="n">product_id</span><span class="p">,</span> <span class="s1">&#39;candles&#39;</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">)</span></div>
 
-  <span class="k">def</span> <span class="nf">get_stats</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">product_id</span><span class="o">=</span><span class="s1">&#39;BTC-USD&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="MarketClient.get_stats"><a class="viewcode-back" href="../../cbexchange.html#cbexchange.market.MarketClient.get_stats">[docs]</a>  <span class="k">def</span> <span class="nf">get_stats</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">product_id</span><span class="o">=</span><span class="s1">&#39;BTC-USD&#39;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;`&lt;https://docs.exchange.coinbase.com/#get-24hr-stats&gt;`_&quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get</span><span class="p">(</span><span class="s1">&#39;products&#39;</span><span class="p">,</span> <span class="n">product_id</span><span class="p">,</span> <span class="s1">&#39;stats&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get</span><span class="p">(</span><span class="s1">&#39;products&#39;</span><span class="p">,</span> <span class="n">product_id</span><span class="p">,</span> <span class="s1">&#39;stats&#39;</span><span class="p">)</span></div>
 
-  <span class="k">def</span> <span class="nf">get_currencies</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="MarketClient.get_currencies"><a class="viewcode-back" href="../../cbexchange.html#cbexchange.market.MarketClient.get_currencies">[docs]</a>  <span class="k">def</span> <span class="nf">get_currencies</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;`&lt;https://docs.exchange.coinbase.com/#get-currencies&gt;`_&quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get</span><span class="p">(</span><span class="s1">&#39;currencies&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get</span><span class="p">(</span><span class="s1">&#39;currencies&#39;</span><span class="p">)</span></div>
 
-  <span class="k">def</span> <span class="nf">get_time</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="MarketClient.get_time"><a class="viewcode-back" href="../../cbexchange.html#cbexchange.market.MarketClient.get_time">[docs]</a>  <span class="k">def</span> <span class="nf">get_time</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;`&lt;https://docs.exchange.coinbase.com/#time&gt;`_&quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get</span><span class="p">(</span><span class="s1">&#39;time&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get</span><span class="p">(</span><span class="s1">&#39;time&#39;</span><span class="p">)</span></div></div>
 
-<span class="k">class</span> <span class="nc">MarketPaginationClient</span><span class="p">(</span><span class="n">PaginationClient</span><span class="p">):</span>
+<div class="viewcode-block" id="MarketPaginationClient"><a class="viewcode-back" href="../../cbexchange.html#cbexchange.market.MarketPaginationClient">[docs]</a><span class="k">class</span> <span class="nc">MarketPaginationClient</span><span class="p">(</span><span class="n">PaginationClient</span><span class="p">):</span>
   <span class="k">def</span> <span class="nf">_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method</span><span class="p">,</span> <span class="o">*</span><span class="n">relative_path_parts</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Sends an HTTP request to the REST API and receives the requested data.</span>
 <span class="sd">    Additionally sets up pagination cursors.</span>
@@ -224,7 +224,7 @@
     <span class="bp">self</span><span class="o">.</span><span class="n">is_initial</span> <span class="o">=</span> <span class="bp">False</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">before_cursor</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;cb-before&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">after_cursor</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;cb-after&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
-    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_handle_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_handle_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span><span class="o">.</span><span class="n">json</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="GetTradesPagination"><a class="viewcode-back" href="../../cbexchange.html#cbexchange.market.GetTradesPagination">[docs]</a><span class="k">class</span> <span class="nc">GetTradesPagination</span><span class="p">(</span><span class="n">MarketPaginationClient</span><span class="p">):</span>
   <span class="sd">&quot;&quot;&quot;`&lt;https://docs.exchange.coinbase.com/#get-trades&gt;`_&quot;&quot;&quot;</span>
@@ -237,11 +237,11 @@
     <span class="nb">super</span><span class="p">(</span><span class="n">GetTradesPagination</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">api_uri</span><span class="p">,</span> <span class="n">before</span><span class="p">,</span> <span class="n">limit</span><span class="p">,</span> <span class="n">cursor</span><span class="p">)</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">product_id</span> <span class="o">=</span> <span class="n">product_id</span>
 
-  <span class="k">def</span> <span class="nf">endpoint</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="GetTradesPagination.endpoint"><a class="viewcode-back" href="../../cbexchange.html#cbexchange.market.GetTradesPagination.endpoint">[docs]</a>  <span class="k">def</span> <span class="nf">endpoint</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
     <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_next</span><span class="p">():</span>
       <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get</span><span class="p">(</span><span class="s1">&#39;products&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">product_id</span><span class="p">,</span> <span class="s1">&#39;trades&#39;</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-      <span class="k">return</span> <span class="bp">None</span></div>
+      <span class="k">return</span> <span class="bp">None</span></div></div>
 </pre></div>
 
            </div>

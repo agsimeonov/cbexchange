@@ -128,10 +128,9 @@
             
   <h1>Source code for cbexchange.private</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;Private endpoints are available for order management, and account management.</span>
-<span class="sd">   Every private request must be signed using the described authentication </span>
-<span class="sd">   scheme.</span>
+<span class="sd">Every private request must be signed using the described authentication scheme.</span>
 
-<span class="sd">   Find more here: `&lt;https://docs.exchange.coinbase.com/#private&gt;`_</span>
+<span class="sd">Find more here: `&lt;https://docs.exchange.coinbase.com/#private&gt;`_</span>
 
 <span class="sd">.. module:: private</span>
 <span class="sd">   :synopsis: Private API</span>
@@ -394,7 +393,7 @@
     <span class="sd">&quot;&quot;&quot;`&lt;https://docs.exchange.coinbase.com/#get-report-status&gt;`_&quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get</span><span class="p">(</span><span class="s1">&#39;reports&#39;</span><span class="p">,</span> <span class="n">report_id</span><span class="p">)</span></div></div>
 
-<span class="k">class</span> <span class="nc">PrivatePaginationClient</span><span class="p">(</span><span class="n">PaginationClient</span><span class="p">):</span>
+<div class="viewcode-block" id="PrivatePaginationClient"><a class="viewcode-back" href="../../cbexchange.html#cbexchange.private.PrivatePaginationClient">[docs]</a><span class="k">class</span> <span class="nc">PrivatePaginationClient</span><span class="p">(</span><span class="n">PaginationClient</span><span class="p">):</span>
   <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">auth</span><span class="p">,</span> <span class="n">api_uri</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">before</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">cursor</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
     <span class="nb">super</span><span class="p">(</span><span class="n">PrivatePaginationClient</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">api_uri</span><span class="p">,</span>
                                                   <span class="n">before</span><span class="p">,</span>
@@ -423,17 +422,17 @@
     <span class="bp">self</span><span class="o">.</span><span class="n">is_initial</span> <span class="o">=</span> <span class="bp">False</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">before_cursor</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;cb-before&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">after_cursor</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;cb-after&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
-    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_handle_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_handle_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span><span class="o">.</span><span class="n">json</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="ListAccountsPagination"><a class="viewcode-back" href="../../cbexchange.html#cbexchange.private.ListAccountsPagination">[docs]</a><span class="k">class</span> <span class="nc">ListAccountsPagination</span><span class="p">(</span><span class="n">PrivatePaginationClient</span><span class="p">):</span>
   <span class="sd">&quot;&quot;&quot;`&lt;https://docs.exchange.coinbase.com/#selecting-a-timestamp&gt;`_&quot;&quot;&quot;</span>
-  <span class="k">def</span> <span class="nf">endpoint</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="ListAccountsPagination.endpoint"><a class="viewcode-back" href="../../cbexchange.html#cbexchange.private.ListAccountsPagination.endpoint">[docs]</a>  <span class="k">def</span> <span class="nf">endpoint</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
     <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_next</span><span class="p">():</span>
       <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get</span><span class="p">(</span><span class="s1">&#39;accounts&#39;</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-      <span class="k">return</span> <span class="bp">None</span></div>
+      <span class="k">return</span> <span class="bp">None</span></div></div>
 
-<span class="k">class</span> <span class="nc">AccountPagination</span><span class="p">(</span><span class="n">PrivatePaginationClient</span><span class="p">):</span>
+<div class="viewcode-block" id="AccountPagination"><a class="viewcode-back" href="../../cbexchange.html#cbexchange.private.AccountPagination">[docs]</a><span class="k">class</span> <span class="nc">AccountPagination</span><span class="p">(</span><span class="n">PrivatePaginationClient</span><span class="p">):</span>
   <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                <span class="n">account_id</span><span class="p">,</span>
                <span class="n">auth</span><span class="p">,</span>
@@ -446,31 +445,31 @@
                                             <span class="n">before</span><span class="p">,</span>
                                             <span class="n">limit</span><span class="p">,</span>
                                             <span class="n">cursor</span><span class="p">)</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">account_id</span> <span class="o">=</span> <span class="n">account_id</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">account_id</span> <span class="o">=</span> <span class="n">account_id</span></div>
 
 <div class="viewcode-block" id="GetAccountHistoryPagination"><a class="viewcode-back" href="../../cbexchange.html#cbexchange.private.GetAccountHistoryPagination">[docs]</a><span class="k">class</span> <span class="nc">GetAccountHistoryPagination</span><span class="p">(</span><span class="n">AccountPagination</span><span class="p">):</span>
   <span class="sd">&quot;&quot;&quot;`&lt;https://docs.exchange.coinbase.com/#get-account-history&gt;`_&quot;&quot;&quot;</span>
-  <span class="k">def</span> <span class="nf">endpoint</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="GetAccountHistoryPagination.endpoint"><a class="viewcode-back" href="../../cbexchange.html#cbexchange.private.GetAccountHistoryPagination.endpoint">[docs]</a>  <span class="k">def</span> <span class="nf">endpoint</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
     <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_next</span><span class="p">():</span>
       <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get</span><span class="p">(</span><span class="s1">&#39;accounts&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">account_id</span><span class="p">,</span> <span class="s1">&#39;ledger&#39;</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-      <span class="k">return</span> <span class="bp">None</span></div>
+      <span class="k">return</span> <span class="bp">None</span></div></div>
 
 <div class="viewcode-block" id="GetHoldsPagination"><a class="viewcode-back" href="../../cbexchange.html#cbexchange.private.GetHoldsPagination">[docs]</a><span class="k">class</span> <span class="nc">GetHoldsPagination</span><span class="p">(</span><span class="n">AccountPagination</span><span class="p">):</span>
   <span class="sd">&quot;&quot;&quot;`&lt;https://docs.exchange.coinbase.com/#get-holds&gt;`_&quot;&quot;&quot;</span>
-  <span class="k">def</span> <span class="nf">endpoint</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="GetHoldsPagination.endpoint"><a class="viewcode-back" href="../../cbexchange.html#cbexchange.private.GetHoldsPagination.endpoint">[docs]</a>  <span class="k">def</span> <span class="nf">endpoint</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
     <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_next</span><span class="p">():</span>
       <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get</span><span class="p">(</span><span class="s1">&#39;accounts&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">account_id</span><span class="p">,</span> <span class="s1">&#39;holds&#39;</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-      <span class="k">return</span> <span class="bp">None</span></div>
+      <span class="k">return</span> <span class="bp">None</span></div></div>
 
 <div class="viewcode-block" id="ListFillsPagination"><a class="viewcode-back" href="../../cbexchange.html#cbexchange.private.ListFillsPagination">[docs]</a><span class="k">class</span> <span class="nc">ListFillsPagination</span><span class="p">(</span><span class="n">PrivatePaginationClient</span><span class="p">):</span>
   <span class="sd">&quot;&quot;&quot;`&lt;https://docs.exchange.coinbase.com/#list-fills&gt;`_&quot;&quot;&quot;</span>
-  <span class="k">def</span> <span class="nf">endpoint</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="ListFillsPagination.endpoint"><a class="viewcode-back" href="../../cbexchange.html#cbexchange.private.ListFillsPagination.endpoint">[docs]</a>  <span class="k">def</span> <span class="nf">endpoint</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
     <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_next</span><span class="p">():</span>
       <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get</span><span class="p">(</span><span class="s1">&#39;fills&#39;</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-      <span class="k">return</span> <span class="bp">None</span></div>
+      <span class="k">return</span> <span class="bp">None</span></div></div>
 
 <div class="viewcode-block" id="CancelAllPagination"><a class="viewcode-back" href="../../cbexchange.html#cbexchange.private.CancelAllPagination">[docs]</a><span class="k">class</span> <span class="nc">CancelAllPagination</span><span class="p">(</span><span class="n">PrivatePaginationClient</span><span class="p">):</span>
   <span class="sd">&quot;&quot;&quot;`&lt;https://docs.exchange.coinbase.com/#cancel-all&gt;`_&quot;&quot;&quot;</span>
@@ -488,11 +487,11 @@
                                             <span class="n">cursor</span><span class="p">)</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">product_id</span> <span class="o">=</span> <span class="n">product_id</span>
 
-  <span class="k">def</span> <span class="nf">endpoint</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="CancelAllPagination.endpoint"><a class="viewcode-back" href="../../cbexchange.html#cbexchange.private.CancelAllPagination.endpoint">[docs]</a>  <span class="k">def</span> <span class="nf">endpoint</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
     <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_next</span><span class="p">():</span>
       <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_delete</span><span class="p">(</span><span class="s1">&#39;orders&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;product_id&#39;</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">product_id</span><span class="p">})</span>
     <span class="k">else</span><span class="p">:</span>
-      <span class="k">return</span> <span class="bp">None</span></div>
+      <span class="k">return</span> <span class="bp">None</span></div></div>
 
 <div class="viewcode-block" id="ListOrdersPagination"><a class="viewcode-back" href="../../cbexchange.html#cbexchange.private.ListOrdersPagination">[docs]</a><span class="k">class</span> <span class="nc">ListOrdersPagination</span><span class="p">(</span><span class="n">PrivatePaginationClient</span><span class="p">):</span>
   <span class="sd">&quot;&quot;&quot;`&lt;https://docs.exchange.coinbase.com/#list-orders&gt;`_&quot;&quot;&quot;</span>
@@ -510,11 +509,11 @@
                                                <span class="n">cursor</span><span class="p">)</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="n">status</span>
 
-  <span class="k">def</span> <span class="nf">endpoint</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="ListOrdersPagination.endpoint"><a class="viewcode-back" href="../../cbexchange.html#cbexchange.private.ListOrdersPagination.endpoint">[docs]</a>  <span class="k">def</span> <span class="nf">endpoint</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
     <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_next</span><span class="p">():</span>
       <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get</span><span class="p">(</span><span class="s1">&#39;orders&#39;</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;status&#39;</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">status</span><span class="p">})</span>
     <span class="k">else</span><span class="p">:</span>
-      <span class="k">return</span> <span class="bp">None</span></div>
+      <span class="k">return</span> <span class="bp">None</span></div></div>
 </pre></div>
 
            </div>
