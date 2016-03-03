@@ -18,5 +18,9 @@ setup(
               'orderbook',
               'order',
               'book'],
+  install_requires=[
+    'requests',
+    'websocket-client'
+  ],
   classifiers = [],
 )
