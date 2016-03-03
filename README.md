@@ -27,6 +27,8 @@ You can simply run the following command to install CBExchange:
 pip install cbexchange
 ```
 
+CBExchange PyPI site: https://pypi.python.org/pypi/cbexchange
+
 ### Documentation
 #### http://agsimeonov.github.io/cbexchange
 Take advantage of the CBExchange documentation. It includes informations for all public modules, functions and parameters. As well as some examples.
