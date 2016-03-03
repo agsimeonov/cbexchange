@@ -20,6 +20,13 @@ pip install requests
 pip install websocket-client
 ```
 
+### Installation
+You can simply run the following command to install CBExchange:
+
+```
+pip install cbexchange
+```
+
 ### Documentation
 #### http://agsimeonov.github.io/cbexchange
 Take advantage of the CBExchange documentation. It includes informations for all public modules, functions and parameters. As well as some examples.
