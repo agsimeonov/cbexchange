@@ -1,0 +1,578 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>cbexchange.private &mdash; CBExchange 1.0.0 documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="CBExchange 1.0.0 documentation" href="../../index.html"/>
+        <link rel="up" title="Module code" href="../index.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> CBExchange
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../cbexchange.html">Documentation</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../../index.html">CBExchange</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+      
+    <li>cbexchange.private</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for cbexchange.private</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Private endpoints are available for order management, and account management.</span>
+<span class="sd">   Every private request must be signed using the described authentication </span>
+<span class="sd">   scheme.</span>
+
+<span class="sd">   Find more here: `&lt;https://docs.exchange.coinbase.com/#private&gt;`_</span>
+
+<span class="sd">.. module:: private</span>
+<span class="sd">   :synopsis: Private API</span>
+
+<span class="sd">.. moduleauthor:: Alexander Simeonov &lt;agsimeon@buffalo.edu&gt;</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">base64</span> <span class="kn">import</span> <span class="n">b64decode</span>
+<span class="kn">from</span> <span class="nn">hashlib</span> <span class="kn">import</span> <span class="n">sha256</span>
+<span class="kn">from</span> <span class="nn">hmac</span> <span class="kn">import</span> <span class="n">new</span>
+<span class="kn">from</span> <span class="nn">time</span> <span class="kn">import</span> <span class="n">time</span>
+
+<span class="kn">from</span> <span class="nn">requests</span> <span class="kn">import</span> <span class="n">delete</span><span class="p">,</span> <span class="n">get</span><span class="p">,</span> <span class="n">post</span>
+<span class="kn">from</span> <span class="nn">requests.auth</span> <span class="kn">import</span> <span class="n">AuthBase</span>
+
+<span class="kn">from</span> <span class="nn">cbexchange.client</span> <span class="kn">import</span> <span class="n">RESTClient</span><span class="p">,</span> <span class="n">PaginationClient</span>
+
+<span class="c1"># List Orders Status</span>
+<span class="n">STATUS_ALL</span>     <span class="o">=</span> <span class="s1">&#39;all&#39;</span>
+<span class="n">STATUS_OPEN</span>    <span class="o">=</span> <span class="s1">&#39;open&#39;</span>
+<span class="n">STATUS_PENDING</span> <span class="o">=</span> <span class="s1">&#39;pending&#39;</span>
+
+
+
+<div class="viewcode-block" id="CoinbaseExchangeAuth"><a class="viewcode-back" href="../../cbexchange.html#cbexchange.private.CoinbaseExchangeAuth">[docs]</a><span class="k">class</span> <span class="nc">CoinbaseExchangeAuth</span><span class="p">(</span><span class="n">AuthBase</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot;`&lt;https://docs.exchange.coinbase.com/#authentication&gt;`_</span>
+
+<span class="sd">  :param str api_key: the API Key</span>
+<span class="sd">  :param str secret_key: the base64-encoded signature</span>
+<span class="sd">  :param str passphrase: the passphrase you specified when creating the API key</span>
+
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">api_key</span><span class="p">,</span> <span class="n">secret_key</span><span class="p">,</span> <span class="n">passphrase</span><span class="p">):</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">api_key</span> <span class="o">=</span> <span class="n">api_key</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">secret_key</span> <span class="o">=</span> <span class="n">secret_key</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">passphrase</span> <span class="o">=</span> <span class="n">passphrase</span>
+
+  <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span>
+    <span class="n">timestamp</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">time</span><span class="p">())</span>
+    <span class="n">message</span> <span class="o">=</span> <span class="n">timestamp</span>        <span class="o">+</span> \
+              <span class="n">request</span><span class="o">.</span><span class="n">method</span>   <span class="o">+</span> \
+              <span class="n">request</span><span class="o">.</span><span class="n">path_url</span> <span class="o">+</span> \
+              <span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">body</span> <span class="ow">or</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="n">hmac_key</span> <span class="o">=</span> <span class="n">b64decode</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">secret_key</span><span class="p">)</span>
+    <span class="n">signature</span> <span class="o">=</span> <span class="n">new</span><span class="p">(</span><span class="n">hmac_key</span><span class="p">,</span> <span class="n">message</span><span class="p">,</span> <span class="n">sha256</span><span class="p">)</span>
+    <span class="n">signature_b64</span> <span class="o">=</span> <span class="n">signature</span><span class="o">.</span><span class="n">digest</span><span class="p">()</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;base64&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+
+    <span class="n">request</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">update</span><span class="p">({</span>
+      <span class="s1">&#39;CB-ACCESS-SIGN&#39;</span><span class="p">:</span><span class="n">signature_b64</span><span class="p">,</span>
+      <span class="s1">&#39;CB-ACCESS-TIMESTAMP&#39;</span><span class="p">:</span><span class="n">timestamp</span><span class="p">,</span>
+      <span class="s1">&#39;CB-ACCESS-KEY&#39;</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">api_key</span><span class="p">,</span>
+      <span class="s1">&#39;CB-ACCESS-PASSPHRASE&#39;</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">passphrase</span><span class="p">,</span>
+      <span class="s1">&#39;Content-Type&#39;</span><span class="p">:</span><span class="s1">&#39;application/json&#39;</span>
+    <span class="p">})</span>
+
+    <span class="k">return</span> <span class="n">request</span></div>
+
+<div class="viewcode-block" id="PrivateClient"><a class="viewcode-back" href="../../cbexchange.html#cbexchange.private.PrivateClient">[docs]</a><span class="k">class</span> <span class="nc">PrivateClient</span><span class="p">(</span><span class="n">RESTClient</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot;`&lt;https://docs.exchange.coinbase.com/#authentication&gt;`_</span>
+
+<span class="sd">  :param CoinbaseExchangeAuth auth: authentication for the Private API</span>
+<span class="sd">  :param str api_uri: Coinbase Exchange REST API URI</span>
+
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">auth</span><span class="p">,</span> <span class="n">api_uri</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="nb">super</span><span class="p">(</span><span class="n">PrivateClient</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">api_uri</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">auth</span> <span class="o">=</span> <span class="n">auth</span>
+
+  <span class="k">def</span> <span class="nf">_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method</span><span class="p">,</span> <span class="o">*</span><span class="n">relative_path_parts</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Sends an HTTP request to the REST API and receives the requested data.</span>
+
+<span class="sd">    :param str method: HTTP method name</span>
+<span class="sd">    :param relative_path_parts: the relative paths for the request URI</span>
+<span class="sd">    :param kwargs: argument keywords</span>
+<span class="sd">    :returns: requested data</span>
+<span class="sd">    :raises APIError: for non-2xx responses</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">uri</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_api_uri</span><span class="p">(</span><span class="o">*</span><span class="n">relative_path_parts</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;get&#39;</span><span class="p">:</span>
+      <span class="n">response</span> <span class="o">=</span> <span class="n">get</span><span class="p">(</span><span class="n">uri</span><span class="p">,</span> <span class="n">auth</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">auth</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;params&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">))</span>
+    <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;post&#39;</span><span class="p">:</span>
+      <span class="n">response</span> <span class="o">=</span> <span class="n">post</span><span class="p">(</span><span class="n">uri</span><span class="p">,</span> <span class="n">auth</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">auth</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;data&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+      <span class="n">response</span> <span class="o">=</span> <span class="n">delete</span><span class="p">(</span><span class="n">uri</span><span class="p">,</span> <span class="n">auth</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">auth</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;data&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">))</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_handle_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+
+<div class="viewcode-block" id="PrivateClient.list_accounts"><a class="viewcode-back" href="../../cbexchange.html#cbexchange.private.PrivateClient.list_accounts">[docs]</a>  <span class="k">def</span> <span class="nf">list_accounts</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;`&lt;https://docs.exchange.coinbase.com/#selecting-a-timestamp&gt;`_&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get</span><span class="p">(</span><span class="s1">&#39;accounts&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="PrivateClient.get_account"><a class="viewcode-back" href="../../cbexchange.html#cbexchange.private.PrivateClient.get_account">[docs]</a>  <span class="k">def</span> <span class="nf">get_account</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">account_id</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;`&lt;https://docs.exchange.coinbase.com/#get-an-account&gt;`_&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get</span><span class="p">(</span><span class="s1">&#39;accounts&#39;</span><span class="p">,</span> <span class="n">account_id</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="PrivateClient.get_account_history"><a class="viewcode-back" href="../../cbexchange.html#cbexchange.private.PrivateClient.get_account_history">[docs]</a>  <span class="k">def</span> <span class="nf">get_account_history</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">account_id</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;`&lt;https://docs.exchange.coinbase.com/#get-account-history&gt;`_&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get</span><span class="p">(</span><span class="s1">&#39;accounts&#39;</span><span class="p">,</span> <span class="n">account_id</span><span class="p">,</span> <span class="s1">&#39;ledger&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="PrivateClient.get_holds"><a class="viewcode-back" href="../../cbexchange.html#cbexchange.private.PrivateClient.get_holds">[docs]</a>  <span class="k">def</span> <span class="nf">get_holds</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">account_id</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;`&lt;https://docs.exchange.coinbase.com/#get-holds&gt;`_&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get</span><span class="p">(</span><span class="s1">&#39;accounts&#39;</span><span class="p">,</span> <span class="n">account_id</span><span class="p">,</span> <span class="s1">&#39;holds&#39;</span><span class="p">)</span></div>
+
+  <span class="k">def</span> <span class="nf">_place_order</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                   <span class="n">side</span><span class="p">,</span>
+                   <span class="n">product_id</span><span class="o">=</span><span class="s1">&#39;BTC-USD&#39;</span><span class="p">,</span>
+                   <span class="n">client_oid</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                   <span class="nb">type</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                   <span class="n">stp</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                   <span class="n">price</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                   <span class="n">size</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                   <span class="n">funds</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                   <span class="n">time_in_force</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                   <span class="n">cancel_after</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                   <span class="n">post_only</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;`&lt;https://docs.exchange.coinbase.com/#orders&gt;`_&quot;&quot;&quot;</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
+      <span class="s1">&#39;side&#39;</span><span class="p">:</span><span class="n">side</span><span class="p">,</span>
+      <span class="s1">&#39;product_id&#39;</span><span class="p">:</span><span class="n">product_id</span><span class="p">,</span>
+      <span class="s1">&#39;client_oid&#39;</span><span class="p">:</span><span class="n">client_oid</span><span class="p">,</span>
+      <span class="s1">&#39;type&#39;</span><span class="p">:</span><span class="nb">type</span><span class="p">,</span>
+      <span class="s1">&#39;stp&#39;</span><span class="p">:</span><span class="n">stp</span><span class="p">,</span>
+      <span class="s1">&#39;price&#39;</span><span class="p">:</span><span class="n">price</span><span class="p">,</span>
+      <span class="s1">&#39;size&#39;</span><span class="p">:</span><span class="n">size</span><span class="p">,</span>
+      <span class="s1">&#39;funds&#39;</span><span class="p">:</span><span class="n">funds</span><span class="p">,</span>
+      <span class="s1">&#39;time_in_force&#39;</span><span class="p">:</span><span class="n">time_in_force</span><span class="p">,</span>
+      <span class="s1">&#39;cancel_after&#39;</span><span class="p">:</span><span class="n">cancel_after</span><span class="p">,</span>
+      <span class="s1">&#39;post_only&#39;</span><span class="p">:</span><span class="n">post_only</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_post</span><span class="p">(</span><span class="s1">&#39;orders&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">)</span>
+
+<div class="viewcode-block" id="PrivateClient.place_limit_order"><a class="viewcode-back" href="../../cbexchange.html#cbexchange.private.PrivateClient.place_limit_order">[docs]</a>  <span class="k">def</span> <span class="nf">place_limit_order</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                        <span class="n">side</span><span class="p">,</span>
+                        <span class="n">price</span><span class="p">,</span>
+                        <span class="n">size</span><span class="p">,</span>
+                        <span class="n">product_id</span><span class="o">=</span><span class="s1">&#39;BTC-USD&#39;</span><span class="p">,</span>
+                        <span class="n">client_oid</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                        <span class="n">stp</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                        <span class="n">time_in_force</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                        <span class="n">cancel_after</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                        <span class="n">post_only</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;`&lt;https://docs.exchange.coinbase.com/#orders&gt;`_&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_place_order</span><span class="p">(</span><span class="n">side</span><span class="p">,</span>
+                             <span class="n">product_id</span><span class="o">=</span><span class="n">product_id</span><span class="p">,</span>
+                             <span class="n">client_oid</span><span class="o">=</span><span class="n">client_oid</span><span class="p">,</span>
+                             <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;limit&#39;</span><span class="p">,</span>
+                             <span class="n">stp</span><span class="o">=</span><span class="n">stp</span><span class="p">,</span>
+                             <span class="n">price</span><span class="o">=</span><span class="n">price</span><span class="p">,</span>
+                             <span class="n">size</span><span class="o">=</span><span class="n">size</span><span class="p">,</span>
+                             <span class="n">time_in_force</span><span class="o">=</span><span class="n">time_in_force</span><span class="p">,</span>
+                             <span class="n">cancel_after</span><span class="o">=</span><span class="n">cancel_after</span><span class="p">,</span>
+                             <span class="n">post_only</span><span class="o">=</span><span class="n">post_only</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="PrivateClient.place_market_order"><a class="viewcode-back" href="../../cbexchange.html#cbexchange.private.PrivateClient.place_market_order">[docs]</a>  <span class="k">def</span> <span class="nf">place_market_order</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                         <span class="n">side</span><span class="p">,</span>
+                         <span class="n">product_id</span><span class="o">=</span><span class="s1">&#39;BTC-USD&#39;</span><span class="p">,</span>
+                         <span class="n">size</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                         <span class="n">funds</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                         <span class="n">client_oid</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                         <span class="n">stp</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;`&lt;https://docs.exchange.coinbase.com/#orders&gt;`_&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_place_order</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s1">&#39;market&#39;</span><span class="p">,</span>
+                             <span class="n">side</span><span class="o">=</span><span class="n">size</span><span class="p">,</span>
+                             <span class="n">product_id</span><span class="o">=</span><span class="n">product_id</span><span class="p">,</span>
+                             <span class="n">size</span><span class="o">=</span><span class="n">size</span><span class="p">,</span>
+                             <span class="n">funds</span><span class="o">=</span><span class="n">funds</span><span class="p">,</span>
+                             <span class="n">client_oid</span><span class="o">=</span><span class="n">client_oid</span><span class="p">,</span>
+                             <span class="n">stp</span><span class="o">=</span><span class="n">stp</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="PrivateClient.cancel_order"><a class="viewcode-back" href="../../cbexchange.html#cbexchange.private.PrivateClient.cancel_order">[docs]</a>  <span class="k">def</span> <span class="nf">cancel_order</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">order_id</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;`&lt;https://docs.exchange.coinbase.com/#cancel-an-order&gt;`_&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_delete</span><span class="p">(</span><span class="s1">&#39;orders&#39;</span><span class="p">,</span> <span class="n">order_id</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="PrivateClient.cancel_all"><a class="viewcode-back" href="../../cbexchange.html#cbexchange.private.PrivateClient.cancel_all">[docs]</a>  <span class="k">def</span> <span class="nf">cancel_all</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">product_id</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;`&lt;https://docs.exchange.coinbase.com/#cancel-all&gt;`_&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_delete</span><span class="p">(</span><span class="s1">&#39;orders&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;product_id&#39;</span><span class="p">:</span><span class="n">product_id</span><span class="p">})</span></div>
+
+<div class="viewcode-block" id="PrivateClient.list_orders"><a class="viewcode-back" href="../../cbexchange.html#cbexchange.private.PrivateClient.list_orders">[docs]</a>  <span class="k">def</span> <span class="nf">list_orders</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">status</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;`&lt;https://docs.exchange.coinbase.com/#list-orders&gt;`_&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get</span><span class="p">(</span><span class="s1">&#39;orders&#39;</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;status&#39;</span><span class="p">:</span><span class="n">status</span><span class="p">})</span></div>
+
+<div class="viewcode-block" id="PrivateClient.get_order"><a class="viewcode-back" href="../../cbexchange.html#cbexchange.private.PrivateClient.get_order">[docs]</a>  <span class="k">def</span> <span class="nf">get_order</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">order_id</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;`&lt;https://docs.exchange.coinbase.com/#get-an-order&gt;`_&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get</span><span class="p">(</span><span class="s1">&#39;orders&#39;</span><span class="p">,</span> <span class="n">order_id</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="PrivateClient.list_fills"><a class="viewcode-back" href="../../cbexchange.html#cbexchange.private.PrivateClient.list_fills">[docs]</a>  <span class="k">def</span> <span class="nf">list_fills</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;`&lt;https://docs.exchange.coinbase.com/#list-fills&gt;`_&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get</span><span class="p">(</span><span class="s1">&#39;fills&#39;</span><span class="p">)</span></div>
+
+  <span class="k">def</span> <span class="nf">_deposit_withdraw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">type</span><span class="p">,</span> <span class="n">amount</span><span class="p">,</span> <span class="n">coinbase_account_id</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;`&lt;https://docs.exchange.coinbase.com/#depositwithdraw&gt;`_&quot;&quot;&quot;</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
+      <span class="s1">&#39;type&#39;</span><span class="p">:</span><span class="nb">type</span><span class="p">,</span>
+      <span class="s1">&#39;amount&#39;</span><span class="p">:</span><span class="n">amount</span><span class="p">,</span>
+      <span class="s1">&#39;coinbase_account_id&#39;</span><span class="p">:</span><span class="n">coinbase_account_id</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_post</span><span class="p">(</span><span class="s1">&#39;transfers&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">)</span>
+
+<div class="viewcode-block" id="PrivateClient.deposit"><a class="viewcode-back" href="../../cbexchange.html#cbexchange.private.PrivateClient.deposit">[docs]</a>  <span class="k">def</span> <span class="nf">deposit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">amount</span><span class="p">,</span> <span class="n">coinbase_account_id</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;`&lt;https://docs.exchange.coinbase.com/#depositwithdraw&gt;`_&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_deposit_withdraw</span><span class="p">(</span><span class="s1">&#39;deposit&#39;</span><span class="p">,</span> <span class="n">amount</span><span class="p">,</span> <span class="n">coinbase_account_id</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="PrivateClient.withdraw"><a class="viewcode-back" href="../../cbexchange.html#cbexchange.private.PrivateClient.withdraw">[docs]</a>  <span class="k">def</span> <span class="nf">withdraw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">amount</span><span class="p">,</span> <span class="n">coinbase_account_id</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;`&lt;https://docs.exchange.coinbase.com/#depositwithdraw&gt;`_&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_deposit_withdraw</span><span class="p">(</span><span class="s1">&#39;withdraw&#39;</span><span class="p">,</span> <span class="n">amount</span><span class="p">,</span> <span class="n">coinbase_account_id</span><span class="p">)</span></div>
+
+  <span class="k">def</span> <span class="nf">_new_report</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                  <span class="nb">type</span><span class="p">,</span>
+                  <span class="n">start_date</span><span class="p">,</span>
+                  <span class="n">end_date</span><span class="p">,</span>
+                  <span class="n">product_id</span><span class="o">=</span><span class="s1">&#39;BTC-USD&#39;</span><span class="p">,</span>
+                  <span class="n">account_id</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                  <span class="n">format</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                  <span class="n">email</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;`&lt;https://docs.exchange.coinbase.com/#create-a-new-report&gt;`_&quot;&quot;&quot;</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
+      <span class="s1">&#39;type&#39;</span><span class="p">:</span><span class="nb">type</span><span class="p">,</span>
+      <span class="s1">&#39;start_date&#39;</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">_format_iso_time</span><span class="p">(</span><span class="n">start_date</span><span class="p">),</span>
+      <span class="s1">&#39;end_date&#39;</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">_format_iso_time</span><span class="p">(</span><span class="n">end_date</span><span class="p">),</span>
+      <span class="s1">&#39;product_id&#39;</span><span class="p">:</span><span class="n">product_id</span><span class="p">,</span>
+      <span class="s1">&#39;account_id&#39;</span><span class="p">:</span><span class="n">account_id</span><span class="p">,</span>
+      <span class="s1">&#39;format&#39;</span><span class="p">:</span><span class="n">format</span><span class="p">,</span>
+      <span class="s1">&#39;email&#39;</span><span class="p">:</span><span class="n">email</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_post</span><span class="p">(</span><span class="s1">&#39;reports&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">)</span>
+
+<div class="viewcode-block" id="PrivateClient.new_fills_report"><a class="viewcode-back" href="../../cbexchange.html#cbexchange.private.PrivateClient.new_fills_report">[docs]</a>  <span class="k">def</span> <span class="nf">new_fills_report</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                       <span class="n">start_date</span><span class="p">,</span>
+                       <span class="n">end_date</span><span class="p">,</span>
+                       <span class="n">account_id</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                       <span class="n">product_id</span><span class="o">=</span><span class="s1">&#39;BTC-USD&#39;</span><span class="p">,</span>
+                       <span class="n">format</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                       <span class="n">email</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;`&lt;https://docs.exchange.coinbase.com/#create-a-new-report&gt;`_&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_new_report</span><span class="p">(</span><span class="n">start_date</span><span class="p">,</span>
+                            <span class="s1">&#39;fills&#39;</span><span class="p">,</span>
+                            <span class="n">end_date</span><span class="p">,</span>
+                            <span class="n">account_id</span><span class="p">,</span>
+                            <span class="n">product_id</span><span class="p">,</span>
+                            <span class="n">format</span><span class="p">,</span>
+                            <span class="n">email</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="PrivateClient.new_accounts_report"><a class="viewcode-back" href="../../cbexchange.html#cbexchange.private.PrivateClient.new_accounts_report">[docs]</a>  <span class="k">def</span> <span class="nf">new_accounts_report</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                          <span class="n">start_date</span><span class="p">,</span>
+                          <span class="n">end_date</span><span class="p">,</span>
+                          <span class="n">account_id</span><span class="p">,</span>
+                          <span class="n">product_id</span><span class="o">=</span><span class="s1">&#39;BTC-USD&#39;</span><span class="p">,</span>
+                          <span class="n">format</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                          <span class="n">email</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;`&lt;https://docs.exchange.coinbase.com/#create-a-new-report&gt;`_&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_new_report</span><span class="p">(</span><span class="n">start_date</span><span class="p">,</span>
+                            <span class="s1">&#39;account&#39;</span><span class="p">,</span>
+                            <span class="n">end_date</span><span class="p">,</span>
+                            <span class="n">product_id</span><span class="p">,</span>
+                            <span class="n">account_id</span><span class="p">,</span>
+                            <span class="n">format</span><span class="p">,</span>
+                            <span class="n">email</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="PrivateClient.get_report_status"><a class="viewcode-back" href="../../cbexchange.html#cbexchange.private.PrivateClient.get_report_status">[docs]</a>  <span class="k">def</span> <span class="nf">get_report_status</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">report_id</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;`&lt;https://docs.exchange.coinbase.com/#get-report-status&gt;`_&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get</span><span class="p">(</span><span class="s1">&#39;reports&#39;</span><span class="p">,</span> <span class="n">report_id</span><span class="p">)</span></div></div>
+
+<span class="k">class</span> <span class="nc">PrivatePaginationClient</span><span class="p">(</span><span class="n">PaginationClient</span><span class="p">):</span>
+  <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">auth</span><span class="p">,</span> <span class="n">api_uri</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">before</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">cursor</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="nb">super</span><span class="p">(</span><span class="n">PrivatePaginationClient</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">api_uri</span><span class="p">,</span>
+                                                  <span class="n">before</span><span class="p">,</span>
+                                                  <span class="n">limit</span><span class="p">,</span>
+                                                  <span class="n">cursor</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">auth</span> <span class="o">=</span> <span class="n">auth</span>
+
+  <span class="k">def</span> <span class="nf">_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method</span><span class="p">,</span> <span class="o">*</span><span class="n">relative_path_parts</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Sends an HTTP request to the REST API and receives the requested data.</span>
+<span class="sd">    Additionally sets up pagination cursors.</span>
+
+<span class="sd">    :param str method: HTTP method name</span>
+<span class="sd">    :param relative_path_parts: the relative paths for the request URI</span>
+<span class="sd">    :param kwargs: argument keywords</span>
+<span class="sd">    :returns: requested data</span>
+<span class="sd">    :raises APIError: for non-2xx responses</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">uri</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_api_uri</span><span class="p">(</span><span class="o">*</span><span class="n">relative_path_parts</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;get&#39;</span><span class="p">:</span>
+      <span class="n">response</span> <span class="o">=</span> <span class="n">get</span><span class="p">(</span><span class="n">uri</span><span class="p">,</span> <span class="n">auth</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">auth</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;params&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">))</span>
+    <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;post&#39;</span><span class="p">:</span>
+      <span class="n">response</span> <span class="o">=</span> <span class="n">post</span><span class="p">(</span><span class="n">uri</span><span class="p">,</span> <span class="n">auth</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">auth</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;data&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+      <span class="n">response</span> <span class="o">=</span> <span class="n">delete</span><span class="p">(</span><span class="n">uri</span><span class="p">,</span> <span class="n">auth</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">auth</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;data&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">))</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">is_initial</span> <span class="o">=</span> <span class="bp">False</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">before_cursor</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;cb-before&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">after_cursor</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;cb-after&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_handle_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+
+<div class="viewcode-block" id="ListAccountsPagination"><a class="viewcode-back" href="../../cbexchange.html#cbexchange.private.ListAccountsPagination">[docs]</a><span class="k">class</span> <span class="nc">ListAccountsPagination</span><span class="p">(</span><span class="n">PrivatePaginationClient</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot;`&lt;https://docs.exchange.coinbase.com/#selecting-a-timestamp&gt;`_&quot;&quot;&quot;</span>
+  <span class="k">def</span> <span class="nf">endpoint</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_next</span><span class="p">():</span>
+      <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get</span><span class="p">(</span><span class="s1">&#39;accounts&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+      <span class="k">return</span> <span class="bp">None</span></div>
+
+<span class="k">class</span> <span class="nc">AccountPagination</span><span class="p">(</span><span class="n">PrivatePaginationClient</span><span class="p">):</span>
+  <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+               <span class="n">account_id</span><span class="p">,</span>
+               <span class="n">auth</span><span class="p">,</span>
+               <span class="n">api_uri</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+               <span class="n">before</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+               <span class="n">limit</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+               <span class="n">cursor</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="nb">super</span><span class="p">(</span><span class="n">AccountPagination</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">auth</span><span class="p">,</span>
+                                            <span class="n">api_uri</span><span class="p">,</span>
+                                            <span class="n">before</span><span class="p">,</span>
+                                            <span class="n">limit</span><span class="p">,</span>
+                                            <span class="n">cursor</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">account_id</span> <span class="o">=</span> <span class="n">account_id</span>
+
+<div class="viewcode-block" id="GetAccountHistoryPagination"><a class="viewcode-back" href="../../cbexchange.html#cbexchange.private.GetAccountHistoryPagination">[docs]</a><span class="k">class</span> <span class="nc">GetAccountHistoryPagination</span><span class="p">(</span><span class="n">AccountPagination</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot;`&lt;https://docs.exchange.coinbase.com/#get-account-history&gt;`_&quot;&quot;&quot;</span>
+  <span class="k">def</span> <span class="nf">endpoint</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_next</span><span class="p">():</span>
+      <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get</span><span class="p">(</span><span class="s1">&#39;accounts&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">account_id</span><span class="p">,</span> <span class="s1">&#39;ledger&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+      <span class="k">return</span> <span class="bp">None</span></div>
+
+<div class="viewcode-block" id="GetHoldsPagination"><a class="viewcode-back" href="../../cbexchange.html#cbexchange.private.GetHoldsPagination">[docs]</a><span class="k">class</span> <span class="nc">GetHoldsPagination</span><span class="p">(</span><span class="n">AccountPagination</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot;`&lt;https://docs.exchange.coinbase.com/#get-holds&gt;`_&quot;&quot;&quot;</span>
+  <span class="k">def</span> <span class="nf">endpoint</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_next</span><span class="p">():</span>
+      <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get</span><span class="p">(</span><span class="s1">&#39;accounts&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">account_id</span><span class="p">,</span> <span class="s1">&#39;holds&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+      <span class="k">return</span> <span class="bp">None</span></div>
+
+<div class="viewcode-block" id="ListFillsPagination"><a class="viewcode-back" href="../../cbexchange.html#cbexchange.private.ListFillsPagination">[docs]</a><span class="k">class</span> <span class="nc">ListFillsPagination</span><span class="p">(</span><span class="n">PrivatePaginationClient</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot;`&lt;https://docs.exchange.coinbase.com/#list-fills&gt;`_&quot;&quot;&quot;</span>
+  <span class="k">def</span> <span class="nf">endpoint</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_next</span><span class="p">():</span>
+      <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get</span><span class="p">(</span><span class="s1">&#39;fills&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+      <span class="k">return</span> <span class="bp">None</span></div>
+
+<div class="viewcode-block" id="CancelAllPagination"><a class="viewcode-back" href="../../cbexchange.html#cbexchange.private.CancelAllPagination">[docs]</a><span class="k">class</span> <span class="nc">CancelAllPagination</span><span class="p">(</span><span class="n">PrivatePaginationClient</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot;`&lt;https://docs.exchange.coinbase.com/#cancel-all&gt;`_&quot;&quot;&quot;</span>
+  <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+               <span class="n">product_id</span><span class="p">,</span>
+               <span class="n">auth</span><span class="p">,</span>
+               <span class="n">api_uri</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+               <span class="n">before</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+               <span class="n">limit</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+               <span class="n">cursor</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="nb">super</span><span class="p">(</span><span class="n">AccountPagination</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">auth</span><span class="p">,</span>
+                                            <span class="n">api_uri</span><span class="p">,</span>
+                                            <span class="n">before</span><span class="p">,</span>
+                                            <span class="n">limit</span><span class="p">,</span>
+                                            <span class="n">cursor</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">product_id</span> <span class="o">=</span> <span class="n">product_id</span>
+
+  <span class="k">def</span> <span class="nf">endpoint</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_next</span><span class="p">():</span>
+      <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_delete</span><span class="p">(</span><span class="s1">&#39;orders&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;product_id&#39;</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">product_id</span><span class="p">})</span>
+    <span class="k">else</span><span class="p">:</span>
+      <span class="k">return</span> <span class="bp">None</span></div>
+
+<div class="viewcode-block" id="ListOrdersPagination"><a class="viewcode-back" href="../../cbexchange.html#cbexchange.private.ListOrdersPagination">[docs]</a><span class="k">class</span> <span class="nc">ListOrdersPagination</span><span class="p">(</span><span class="n">PrivatePaginationClient</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot;`&lt;https://docs.exchange.coinbase.com/#list-orders&gt;`_&quot;&quot;&quot;</span>
+  <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+               <span class="n">auth</span><span class="p">,</span>
+               <span class="n">status</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+               <span class="n">api_uri</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+               <span class="n">before</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+               <span class="n">limit</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+               <span class="n">cursor</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="nb">super</span><span class="p">(</span><span class="n">ListOrdersPagination</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">auth</span><span class="p">,</span>
+                                               <span class="n">api_uri</span><span class="p">,</span>
+                                               <span class="n">before</span><span class="p">,</span>
+                                               <span class="n">limit</span><span class="p">,</span>
+                                               <span class="n">cursor</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="n">status</span>
+
+  <span class="k">def</span> <span class="nf">endpoint</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_next</span><span class="p">():</span>
+      <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get</span><span class="p">(</span><span class="s1">&#39;orders&#39;</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;status&#39;</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">status</span><span class="p">})</span>
+    <span class="k">else</span><span class="p">:</span>
+      <span class="k">return</span> <span class="bp">None</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016, Alexander Simeonov.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'1.0.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

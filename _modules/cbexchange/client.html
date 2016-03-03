@@ -1,0 +1,412 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>cbexchange.client &mdash; CBExchange 1.0.0 documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="CBExchange 1.0.0 documentation" href="../../index.html"/>
+        <link rel="up" title="Module code" href="../index.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> CBExchange
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../cbexchange.html">Documentation</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../../index.html">CBExchange</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+      
+    <li>cbexchange.client</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for cbexchange.client</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Handles Clients in the Coinbase Exchange Library.</span>
+
+<span class="sd">.. module:: client</span>
+<span class="sd">   :synopsis: Client Handling</span>
+
+<span class="sd">.. moduleauthor:: Alexander Simeonov &lt;agsimeon@buffalo.edu&gt;</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">builtins</span> <span class="kn">import</span> <span class="nb">map</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+
+<span class="kn">from</span> <span class="nn">requests.compat</span> <span class="kn">import</span> <span class="n">urljoin</span><span class="p">,</span> <span class="n">quote</span>
+
+<span class="kn">from</span> <span class="nn">cbexchange.error</span> <span class="kn">import</span> <span class="n">get_api_error</span>
+
+
+<div class="viewcode-block" id="APIClient"><a class="viewcode-back" href="../../cbexchange.html#cbexchange.client.APIClient">[docs]</a><span class="k">class</span> <span class="nc">APIClient</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot;Base class of all client in the Coinbase Exchange Library.&quot;&quot;&quot;</span></div>
+
+<div class="viewcode-block" id="RESTClient"><a class="viewcode-back" href="../../cbexchange.html#cbexchange.client.RESTClient">[docs]</a><span class="k">class</span> <span class="nc">RESTClient</span><span class="p">(</span><span class="n">APIClient</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot;Base class of all clients using the REST API.</span>
+
+<span class="sd">  :param str api_uri: Coinbase Exchange REST API URI.</span>
+
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="n">API_URI</span> <span class="o">=</span> <span class="s1">&#39;https://api.exchange.coinbase.com&#39;</span>
+
+  <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">api_uri</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">API_URI</span> <span class="o">=</span> <span class="n">api_uri</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">API_URI</span>
+
+  <span class="k">def</span> <span class="nf">_create_api_uri</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">parts</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Creates fully qualified endpoint URIs.</span>
+
+<span class="sd">    :param parts: the string parts that form the request URI</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">urljoin</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">API_URI</span><span class="p">,</span> <span class="s1">&#39;/&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">quote</span><span class="p">,</span> <span class="n">parts</span><span class="p">)))</span>
+  
+  <span class="k">def</span> <span class="nf">_format_iso_time</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">time</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Makes sure we have proper ISO 8601 time.</span>
+
+<span class="sd">    :param time: either already ISO 8601 a string or datetime.datetime</span>
+<span class="sd">    :returns: ISO 8601 time</span>
+<span class="sd">    :rtype: str</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+      <span class="k">return</span> <span class="n">time</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="n">datetime</span><span class="p">):</span>
+      <span class="k">return</span> <span class="n">time</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">T%H:%M:%S.</span><span class="si">%f</span><span class="s1">Z&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+      <span class="k">return</span> <span class="bp">None</span>
+
+  <span class="k">def</span> <span class="nf">_handle_response</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">response</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Returns the given response or raises an APIError for non-2xx responses.</span>
+
+<span class="sd">    :param requests.Response response: HTTP response</span>
+<span class="sd">    :returns: requested data</span>
+<span class="sd">    :rtype: requests.Response</span>
+<span class="sd">    :raises APIError: for non-2xx responses</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">str</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">status_code</span><span class="p">)</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;2&#39;</span><span class="p">):</span>
+      <span class="k">raise</span> <span class="n">get_api_error</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">response</span>
+
+  <span class="k">def</span> <span class="nf">_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method</span><span class="p">,</span> <span class="o">*</span><span class="n">relative_path_parts</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Abstract method - must be overriden.&quot;&quot;&quot;</span>
+    <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+  <span class="k">def</span> <span class="nf">_get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Performs HTTP GET requests.</span>
+
+<span class="sd">    :param args: arguments</span>
+<span class="sd">    :param kwargs: argument keywords</span>
+<span class="sd">    :returns: requested data</span>
+<span class="sd">    :raises APIError: for non-2xx responses</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request</span><span class="p">(</span><span class="s1">&#39;get&#39;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+  <span class="k">def</span> <span class="nf">_post</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Performs HTTP POST requests.</span>
+
+<span class="sd">    :param args: arguments</span>
+<span class="sd">    :param kwargs: argument keywords</span>
+<span class="sd">    :returns: requested data</span>
+<span class="sd">    :raises APIError: for non-2xx responses</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request</span><span class="p">(</span><span class="s1">&#39;post&#39;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+  <span class="k">def</span> <span class="nf">_delete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Performs HTTP POST requests.</span>
+
+<span class="sd">    :param args: arguments</span>
+<span class="sd">    :param kwargs: argument keywords</span>
+<span class="sd">    :returns: requested data</span>
+<span class="sd">    :raises APIError: for non-2xx responses</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request</span><span class="p">(</span><span class="s1">&#39;post&#39;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="PaginationClient"><a class="viewcode-back" href="../../cbexchange.html#cbexchange.client.PaginationClient">[docs]</a><span class="k">class</span> <span class="nc">PaginationClient</span><span class="p">(</span><span class="n">RESTClient</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot;Handles Pagination `&lt;https://docs.exchange.coinbase.com/#pagination&gt;`_</span>
+
+<span class="sd">  This client is iterable in the given direction (before parameter).</span>
+
+<span class="sd">  :param str api_uri: Coinbase Exchange REST API URI.</span>
+<span class="sd">  :param bool before: if True goes to the page before (older) else after (newer)</span>
+<span class="sd">  :param int limit: number of results per request. Maximum 100. (default 100)</span>
+<span class="sd">  :param cursor: the cursor you want to start at (default latest)</span>
+
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">api_uri</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">before</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">cursor</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="nb">super</span><span class="p">(</span><span class="n">PaginationClient</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">api_uri</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">before</span> <span class="o">=</span> <span class="n">before</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">limit</span> <span class="o">=</span> <span class="n">limit</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">before_cursor</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">after_cursor</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="k">if</span> <span class="n">cursor</span><span class="p">:</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">is_initial</span> <span class="o">=</span> <span class="bp">False</span>
+      <span class="k">if</span> <span class="n">before</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">before_cursor</span> <span class="o">=</span> <span class="n">cursor</span>
+      <span class="k">else</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">after_cursor</span> <span class="o">=</span> <span class="n">cursor</span>
+    <span class="k">else</span><span class="p">:</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">is_initial</span> <span class="o">=</span> <span class="bp">True</span>
+
+  <span class="k">def</span> <span class="nf">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">return</span> <span class="bp">self</span>
+
+  <span class="k">def</span> <span class="nf">__next__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Iterator function for Python 3.</span>
+
+<span class="sd">    :returns: the next message in the sequence</span>
+<span class="sd">    :raises StopIteration: if there are no more messages</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nb">next</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">endpoint</span><span class="p">()</span>
+    <span class="k">if</span> <span class="nb">next</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+      <span class="k">return</span> <span class="nb">next</span>
+    <span class="k">raise</span> <span class="ne">StopIteration</span>
+
+  <span class="c1"># Iterator function for Python 2.</span>
+  <span class="nb">next</span> <span class="o">=</span> <span class="n">__next__</span>
+
+  <span class="k">def</span> <span class="nf">_get_params</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="n">params</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;params&#39;</span><span class="p">,</span> <span class="p">{})</span>
+    <span class="n">params</span><span class="p">[</span><span class="s1">&#39;limit&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">limit</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_initial</span><span class="p">:</span>
+      <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">before</span><span class="p">:</span>
+        <span class="n">params</span><span class="p">[</span><span class="s1">&#39;before&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">before_cursor</span>
+      <span class="k">else</span><span class="p">:</span>
+        <span class="n">params</span><span class="p">[</span><span class="s1">&#39;after&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">after_cursor</span>
+    <span class="k">return</span> <span class="n">params</span>
+
+  <span class="k">def</span> <span class="nf">_check_next</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Checks if a next message is possible.</span>
+
+<span class="sd">    :returns: True if a next message is possible, otherwise False</span>
+<span class="sd">    :rtype: bool</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_initial</span><span class="p">:</span>
+      <span class="k">return</span> <span class="bp">True</span>
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">before</span><span class="p">:</span>
+      <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">before_cursor</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">True</span>
+      <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">False</span>
+    <span class="k">else</span><span class="p">:</span>
+      <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">after_cursor</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">True</span>
+      <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">False</span>
+
+<div class="viewcode-block" id="PaginationClient.is_before"><a class="viewcode-back" href="../../cbexchange.html#cbexchange.client.PaginationClient.is_before">[docs]</a>  <span class="k">def</span> <span class="nf">is_before</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Returns True if the direction is set to before.</span>
+
+<span class="sd">    :returns: True if the direction is set to before, otherwise False</span>
+<span class="sd">    :rtype: bool</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">before</span></div>
+
+<div class="viewcode-block" id="PaginationClient.is_after"><a class="viewcode-back" href="../../cbexchange.html#cbexchange.client.PaginationClient.is_after">[docs]</a>  <span class="k">def</span> <span class="nf">is_after</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Returns True if the direction is set to after.</span>
+
+<span class="sd">    :returns: True if the direction is set to after, otherwise False</span>
+<span class="sd">    :rtype: bool</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">before</span></div>
+
+<div class="viewcode-block" id="PaginationClient.set_before"><a class="viewcode-back" href="../../cbexchange.html#cbexchange.client.PaginationClient.set_before">[docs]</a>  <span class="k">def</span> <span class="nf">set_before</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Sets the direction to before.&quot;&quot;&quot;</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">before</span> <span class="o">=</span> <span class="bp">True</span></div>
+
+<div class="viewcode-block" id="PaginationClient.set_after"><a class="viewcode-back" href="../../cbexchange.html#cbexchange.client.PaginationClient.set_after">[docs]</a>  <span class="k">def</span> <span class="nf">set_after</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Sets the direction to after.&quot;&quot;&quot;</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">before</span> <span class="o">=</span> <span class="bp">False</span></div>
+
+<div class="viewcode-block" id="PaginationClient.endpoint"><a class="viewcode-back" href="../../cbexchange.html#cbexchange.client.PaginationClient.endpoint">[docs]</a>  <span class="k">def</span> <span class="nf">endpoint</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Abstract method - must be overriden. Performs the endpoint operation&quot;&quot;&quot;</span>
+    <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+<div class="viewcode-block" id="PaginationClient.get_before_cursor"><a class="viewcode-back" href="../../cbexchange.html#cbexchange.client.PaginationClient.get_before_cursor">[docs]</a>  <span class="k">def</span> <span class="nf">get_before_cursor</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Acquires the before cursor.</span>
+
+<span class="sd">    :returns: the before cursor</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">before_cursor</span></div>
+
+<div class="viewcode-block" id="PaginationClient.get_after_cursor"><a class="viewcode-back" href="../../cbexchange.html#cbexchange.client.PaginationClient.get_after_cursor">[docs]</a>  <span class="k">def</span> <span class="nf">get_after_cursor</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Acquires the after cursor.</span>
+
+<span class="sd">    :returns: the after cursor</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">after_cursor</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016, Alexander Simeonov.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'1.0.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

@@ -1,0 +1,348 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>cbexchange.websock &mdash; CBExchange 1.0.0 documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="CBExchange 1.0.0 documentation" href="../../index.html"/>
+        <link rel="up" title="Module code" href="../index.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> CBExchange
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../cbexchange.html">Documentation</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../../index.html">CBExchange</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+      
+    <li>cbexchange.websock</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for cbexchange.websock</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;The WebSocket Feed provides real-time market data updates for orders and</span>
+<span class="sd">   trades. </span>
+<span class="sd">   </span>
+<span class="sd">   Find more here: `&lt;https://docs.exchange.coinbase.com/#websocket-feed&gt;`_</span>
+
+<span class="sd">.. module:: websock</span>
+<span class="sd">   :synopsis: WebSocket Feed</span>
+
+<span class="sd">.. moduleauthor:: Alexander Simeonov &lt;agsimeon@buffalo.edu&gt;</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">json</span> <span class="kn">import</span> <span class="n">dumps</span><span class="p">,</span> <span class="n">loads</span>
+<span class="kn">from</span> <span class="nn">threading</span> <span class="kn">import</span> <span class="n">Lock</span><span class="p">,</span> <span class="n">Thread</span>
+<span class="kn">from</span> <span class="nn">time</span> <span class="kn">import</span> <span class="n">sleep</span>
+
+<span class="kn">from</span> <span class="nn">websocket</span> <span class="kn">import</span> <span class="n">create_connection</span>
+
+<span class="kn">from</span> <span class="nn">cbexchange.client</span> <span class="kn">import</span> <span class="n">APIClient</span>
+
+
+<div class="viewcode-block" id="WSClient"><a class="viewcode-back" href="../../cbexchange.html#cbexchange.websock.WSClient">[docs]</a><span class="k">class</span> <span class="nc">WSClient</span><span class="p">(</span><span class="n">APIClient</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot;API Client for Coinbase Exchange WebSocket Feed.</span>
+
+<span class="sd">  This class starts in a disconnected state so make sure to connect before</span>
+<span class="sd">  attempting to receive any messages.  When using the &#39;with&#39; statement the</span>
+<span class="sd">  client connects and disconnects automatically.</span>
+
+<span class="sd">  Once connected the client starts a thread which keeps the WebSocket alive </span>
+<span class="sd">  using periodic pings. There will be only one keep alive thread per client</span>
+<span class="sd">  instance. If the WebSocket connection is somehow lost, the keep alive thread </span>
+<span class="sd">  will clean up and exit.</span>
+
+<span class="sd">  The client is iterable over the messages in the feed:</span>
+
+<span class="sd">  :Example:</span>
+
+<span class="sd">  &gt;&gt;&gt; from cbexchange.websock import WSClient</span>
+<span class="sd">  &gt;&gt;&gt; client = WSClient()</span>
+<span class="sd">  &gt;&gt;&gt; client.connect()</span>
+<span class="sd">  &gt;&gt;&gt; for message in client:</span>
+<span class="sd">  &gt;&gt;&gt;   print(message)</span>
+
+<span class="sd">  The client supports the &#39;with&#39; statment:</span>
+
+<span class="sd">  :Example:</span>
+
+<span class="sd">  &gt;&gt;&gt; from cbexchange.websock import WSClient</span>
+<span class="sd">  &gt;&gt;&gt; with WSClient() as client:</span>
+<span class="sd">  &gt;&gt;&gt;   print(client.receive())</span>
+
+<span class="sd">  :param str ws_uri:  WebSocket URI.</span>
+<span class="sd">  :param str ws_type: `&lt;https://docs.exchange.coinbase.com/#subscribe&gt;`_</span>
+<span class="sd">  :param str ws_product_id: `&lt;https://docs.exchange.coinbase.com/#subscribe&gt;`_</span>
+
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="n">WS_URI</span> <span class="o">=</span> <span class="s1">&#39;wss://ws-feed.exchange.coinbase.com&#39;</span>
+  <span class="n">WS_TYPE</span> <span class="o">=</span> <span class="s1">&#39;subscribe&#39;</span>
+  <span class="n">WS_PRODUCT_ID</span> <span class="o">=</span> <span class="s1">&#39;BTC-USD&#39;</span>
+
+  <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ws_uri</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">ws_type</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">ws_product_id</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">WS_URI</span> <span class="o">=</span> <span class="n">ws_uri</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">WS_URI</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">WS_TYPE</span> <span class="o">=</span> <span class="n">ws_type</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">WS_TYPE</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">WS_PRODUCT_ID</span> <span class="o">=</span> <span class="n">ws_product_id</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">WS_PRODUCT_ID</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_ws</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_thread</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span> <span class="o">=</span> <span class="n">Lock</span><span class="p">()</span>
+
+  <span class="k">def</span> <span class="nf">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">return</span> <span class="bp">self</span>
+
+  <span class="k">def</span> <span class="nf">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">connect</span><span class="p">()</span>
+    <span class="k">return</span> <span class="bp">self</span>
+
+  <span class="k">def</span> <span class="nf">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">type</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">traceback</span><span class="p">):</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">disconnect</span><span class="p">()</span>
+
+  <span class="k">def</span> <span class="nf">__next__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Iterator function for Python 3.</span>
+
+<span class="sd">    :returns: the next message in the sequence</span>
+<span class="sd">    :rtype: dict</span>
+<span class="sd">    :raises StopIteration: if the WebSocket is not connected</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nb">next</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">receive</span><span class="p">()</span>
+    <span class="k">if</span> <span class="nb">next</span><span class="p">:</span>
+      <span class="k">return</span> <span class="nb">next</span>
+    <span class="k">raise</span> <span class="ne">StopIteration</span>
+
+  <span class="c1"># Iterator function for Python 2.</span>
+  <span class="nb">next</span> <span class="o">=</span> <span class="n">__next__</span>
+
+  <span class="k">def</span> <span class="nf">_format_message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Makes sure messages are Pythonic.</span>
+
+<span class="sd">    :param str message: raw message</span>
+<span class="sd">    :returns: Pythonic message</span>
+<span class="sd">    :rtype: dict</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">loads</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+
+  <span class="k">def</span> <span class="nf">_keep_alive_thread</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Used exclusively as a thread which keeps the WebSocket alive.&quot;&quot;&quot;</span>
+    <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+      <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">connected</span><span class="p">():</span>
+          <span class="bp">self</span><span class="o">.</span><span class="n">_ws</span><span class="o">.</span><span class="n">ping</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+          <span class="bp">self</span><span class="o">.</span><span class="n">disconnect</span><span class="p">()</span>
+          <span class="bp">self</span><span class="o">.</span><span class="n">_thread</span> <span class="o">=</span> <span class="bp">None</span>
+          <span class="k">return</span>
+      <span class="n">sleep</span><span class="p">(</span><span class="mi">30</span><span class="p">)</span>
+
+<div class="viewcode-block" id="WSClient.connect"><a class="viewcode-back" href="../../cbexchange.html#cbexchange.websock.WSClient.connect">[docs]</a>  <span class="k">def</span> <span class="nf">connect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Connects and subscribes to the WebSocket Feed.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">connected</span><span class="p">():</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">_ws</span> <span class="o">=</span> <span class="n">create_connection</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">WS_URI</span><span class="p">)</span>
+      <span class="n">message</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;type&#39;</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">WS_TYPE</span><span class="p">,</span>
+        <span class="s1">&#39;product_id&#39;</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">WS_PRODUCT_ID</span>
+      <span class="p">}</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">_ws</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">dumps</span><span class="p">(</span><span class="n">message</span><span class="p">))</span>
+
+      <span class="c1"># There will be only one keep alive thread per client instance</span>
+      <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_thread</span><span class="p">:</span>
+          <span class="n">thread</span> <span class="o">=</span> <span class="n">Thread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_keep_alive_thread</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">[])</span>
+          <span class="n">thread</span><span class="o">.</span><span class="n">start</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="WSClient.disconnect"><a class="viewcode-back" href="../../cbexchange.html#cbexchange.websock.WSClient.disconnect">[docs]</a>  <span class="k">def</span> <span class="nf">disconnect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Disconnects from the WebSocket Feed.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">connected</span><span class="p">():</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">_ws</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">_ws</span> <span class="o">=</span> <span class="bp">None</span></div>
+
+<div class="viewcode-block" id="WSClient.receive"><a class="viewcode-back" href="../../cbexchange.html#cbexchange.websock.WSClient.receive">[docs]</a>  <span class="k">def</span> <span class="nf">receive</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Receive the next message in the sequence.</span>
+
+<span class="sd">    :returns: the next message in the sequence, None if not connected</span>
+<span class="sd">    :rtype: dict</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">connected</span><span class="p">():</span>
+      <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_format_message</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ws</span><span class="o">.</span><span class="n">recv</span><span class="p">())</span>
+    <span class="k">return</span> <span class="bp">None</span></div>
+
+<div class="viewcode-block" id="WSClient.connected"><a class="viewcode-back" href="../../cbexchange.html#cbexchange.websock.WSClient.connected">[docs]</a>  <span class="k">def</span> <span class="nf">connected</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Checks if we are connected to the WebSocket Feed.</span>
+
+<span class="sd">    :returns: True if connected, otherwise False</span>
+<span class="sd">    :rtype: bool</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ws</span><span class="p">:</span>
+      <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ws</span><span class="o">.</span><span class="n">connected</span>
+    <span class="k">return</span> <span class="bp">False</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016, Alexander Simeonov.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'1.0.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

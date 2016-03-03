@@ -1,0 +1,799 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Documentation &mdash; CBExchange 1.0.0 documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="CBExchange 1.0.0 documentation" href="index.html"/>
+        <link rel="prev" title="Welcome to CBExchange’s documentation!" href="index.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> CBExchange
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="">Documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#module-cbexchange.client">client</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-cbexchange.error">error</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-cbexchange.market">market</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-cbexchange.orderbook">orderbook</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-cbexchange.private">private</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-cbexchange.websock">websock</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="index.html">CBExchange</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+ 
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="index.html">Docs</a> &raquo;</li>
+      
+    <li>Documentation</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/cbexchange.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-cbexchange">
+<span id="documentation"></span><h1>Documentation<a class="headerlink" href="#module-cbexchange" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-cbexchange.client">
+<span id="client"></span><h2>client<a class="headerlink" href="#module-cbexchange.client" title="Permalink to this headline">¶</a></h2>
+<p>Handles Clients in the Coinbase Exchange Library.</p>
+<span class="target" id="module-client"></span><dl class="class">
+<dt id="cbexchange.client.APIClient">
+<em class="property">class </em><code class="descclassname">cbexchange.client.</code><code class="descname">APIClient</code><a class="reference internal" href="_modules/cbexchange/client.html#APIClient"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cbexchange.client.APIClient" title="Permalink to this definition">¶</a></dt>
+<dd><p>Base class of all client in the Coinbase Exchange Library.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="cbexchange.client.PaginationClient">
+<em class="property">class </em><code class="descclassname">cbexchange.client.</code><code class="descname">PaginationClient</code><span class="sig-paren">(</span><em>api_uri=None</em>, <em>before=True</em>, <em>limit=None</em>, <em>cursor=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cbexchange/client.html#PaginationClient"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cbexchange.client.PaginationClient" title="Permalink to this definition">¶</a></dt>
+<dd><p>Handles Pagination <a class="reference external" href="https://docs.exchange.coinbase.com/#pagination">https://docs.exchange.coinbase.com/#pagination</a></p>
+<p>This client is iterable in the given direction (before parameter).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>api_uri</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; Coinbase Exchange REST API URI.</li>
+<li><strong>before</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; if True goes to the page before (older) else after (newer)</li>
+<li><strong>limit</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; number of results per request. Maximum 100. (default 100)</li>
+<li><strong>cursor</strong> &#8211; the cursor you want to start at (default latest)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="cbexchange.client.PaginationClient.endpoint">
+<code class="descname">endpoint</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cbexchange/client.html#PaginationClient.endpoint"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cbexchange.client.PaginationClient.endpoint" title="Permalink to this definition">¶</a></dt>
+<dd><p>Abstract method - must be overriden. Performs the endpoint operation</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cbexchange.client.PaginationClient.get_after_cursor">
+<code class="descname">get_after_cursor</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cbexchange/client.html#PaginationClient.get_after_cursor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cbexchange.client.PaginationClient.get_after_cursor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Acquires the after cursor.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">the after cursor</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="cbexchange.client.PaginationClient.get_before_cursor">
+<code class="descname">get_before_cursor</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cbexchange/client.html#PaginationClient.get_before_cursor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cbexchange.client.PaginationClient.get_before_cursor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Acquires the before cursor.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">the before cursor</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="cbexchange.client.PaginationClient.is_after">
+<code class="descname">is_after</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cbexchange/client.html#PaginationClient.is_after"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cbexchange.client.PaginationClient.is_after" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns True if the direction is set to after.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">True if the direction is set to after, otherwise False</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="http://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)">bool</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="cbexchange.client.PaginationClient.is_before">
+<code class="descname">is_before</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cbexchange/client.html#PaginationClient.is_before"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cbexchange.client.PaginationClient.is_before" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns True if the direction is set to before.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">True if the direction is set to before, otherwise False</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="http://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)">bool</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="cbexchange.client.PaginationClient.next">
+<code class="descname">next</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cbexchange.client.PaginationClient.next" title="Permalink to this definition">¶</a></dt>
+<dd><p>Iterator function for Python 3.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">the next message in the sequence</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><strong>StopIteration</strong> &#8211; if there are no more messages</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="cbexchange.client.PaginationClient.set_after">
+<code class="descname">set_after</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cbexchange/client.html#PaginationClient.set_after"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cbexchange.client.PaginationClient.set_after" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the direction to after.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cbexchange.client.PaginationClient.set_before">
+<code class="descname">set_before</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cbexchange/client.html#PaginationClient.set_before"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cbexchange.client.PaginationClient.set_before" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the direction to before.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="cbexchange.client.RESTClient">
+<em class="property">class </em><code class="descclassname">cbexchange.client.</code><code class="descname">RESTClient</code><span class="sig-paren">(</span><em>api_uri=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cbexchange/client.html#RESTClient"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cbexchange.client.RESTClient" title="Permalink to this definition">¶</a></dt>
+<dd><p>Base class of all clients using the REST API.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>api_uri</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; Coinbase Exchange REST API URI.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-cbexchange.error">
+<span id="error"></span><h2>error<a class="headerlink" href="#module-cbexchange.error" title="Permalink to this headline">¶</a></h2>
+<p>Handles Errors in the Coinbase Exchange Library.</p>
+<span class="target" id="module-error"></span><dl class="exception">
+<dt id="cbexchange.error.APIError">
+<em class="property">exception </em><code class="descclassname">cbexchange.error.</code><code class="descname">APIError</code><span class="sig-paren">(</span><em>response</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cbexchange/error.html#APIError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cbexchange.error.APIError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Unless otherwise stated, errors to bad requests will respond with HTTP 4xx 
+or status codes. The body will also contain a message parameter indicating the
+cause. Your language&#8217;s http library should be configured to provide message
+bodies for non-2xx requests so that you can read the message field from the
+body. Find more here: <a class="reference external" href="https://docs.exchange.coinbase.com/#errors">https://docs.exchange.coinbase.com/#errors</a></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>response</strong> (<em>requests.Response</em>) &#8211; HTTP error response</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="exception">
+<dt id="cbexchange.error.CBExchangeError">
+<em class="property">exception </em><code class="descclassname">cbexchange.error.</code><code class="descname">CBExchangeError</code><a class="reference internal" href="_modules/cbexchange/error.html#CBExchangeError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cbexchange.error.CBExchangeError" title="Permalink to this definition">¶</a></dt>
+<dd><p>All Coinbase Exchange Library related errors extend this class.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="cbexchange.error.get_api_error">
+<code class="descclassname">cbexchange.error.</code><code class="descname">get_api_error</code><span class="sig-paren">(</span><em>response</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cbexchange/error.html#get_api_error"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cbexchange.error.get_api_error" title="Permalink to this definition">¶</a></dt>
+<dd><p>Acquires the correct error for a given response.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>response</strong> (<em>requests.Response</em>) &#8211; HTTP error response</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">the appropriate error for a given response</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#cbexchange.error.APIError" title="cbexchange.error.APIError">APIError</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-cbexchange.market">
+<span id="market"></span><h2>market<a class="headerlink" href="#module-cbexchange.market" title="Permalink to this headline">¶</a></h2>
+<dl class="docutils">
+<dt>The Market Data API is an unauthenticated set of endpoints for retrieving </dt>
+<dd><p class="first">market data. These endpoints provide snapshots of market data.</p>
+<p class="last">Find more here: <a class="reference external" href="https://docs.exchange.coinbase.com/#market-data">https://docs.exchange.coinbase.com/#market-data</a></p>
+</dd>
+</dl>
+<span class="target" id="module-market"></span><dl class="class">
+<dt id="cbexchange.market.GetTradesPagination">
+<em class="property">class </em><code class="descclassname">cbexchange.market.</code><code class="descname">GetTradesPagination</code><span class="sig-paren">(</span><em>product_id='BTC-USD'</em>, <em>api_uri=None</em>, <em>before=True</em>, <em>limit=None</em>, <em>cursor=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cbexchange/market.html#GetTradesPagination"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cbexchange.market.GetTradesPagination" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="https://docs.exchange.coinbase.com/#get-trades">https://docs.exchange.coinbase.com/#get-trades</a></p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-cbexchange.orderbook">
+<span id="orderbook"></span><h2>orderbook<a class="headerlink" href="#module-cbexchange.orderbook" title="Permalink to this headline">¶</a></h2>
+<dl class="docutils">
+<dt>The websocket feed provides real-time updates on orders and trades. These </dt>
+<dd><p class="first">updates can be applied on to a level 2 or 3 order book snapshot to maintain 
+an accurate and up-to-date copy of the exchange order book.</p>
+<p class="last">Find more here: <a class="reference external" href="https://docs.exchange.coinbase.com/#real-time-order-book">https://docs.exchange.coinbase.com/#real-time-order-book</a></p>
+</dd>
+</dl>
+<span class="target" id="module-orderbook"></span><dl class="class">
+<dt id="cbexchange.orderbook.OrderBook">
+<em class="property">class </em><code class="descclassname">cbexchange.orderbook.</code><code class="descname">OrderBook</code><span class="sig-paren">(</span><em>ws_uri=None</em>, <em>api_uri=None</em>, <em>product_id=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cbexchange/orderbook.html#OrderBook"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cbexchange.orderbook.OrderBook" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="https://docs.exchange.coinbase.com/#real-time-order-book">https://docs.exchange.coinbase.com/#real-time-order-book</a></p>
+<p>Includes a real-time thread that makes sure the order book is up to date.
+Supports the &#8216;with&#8217; statment.</p>
+<p>The order book format will be:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="p">{</span>
+<span class="gp">&gt;&gt;&gt; </span>   <span class="s2">&quot;asks&quot;</span><span class="p">:</span> <span class="p">{</span>
+<span class="gp">&gt;&gt;&gt; </span>     <span class="s2">&quot;da863862-25f4-4868-ac41-005d11ab0a5f&quot;</span><span class="p">:</span> <span class="p">{</span>
+<span class="gp">&gt;&gt;&gt; </span>       <span class="s2">&quot;price&quot;</span><span class="p">:</span> <span class="s2">&quot;295.97&quot;</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>       <span class="s2">&quot;size&quot;</span><span class="p">:</span> <span class="s2">&quot;5.72036512&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span>     <span class="p">},</span>
+<span class="gp">&gt;&gt;&gt; </span>     <span class="o">...</span>
+<span class="gp">&gt;&gt;&gt; </span>   <span class="p">},</span>
+<span class="gp">&gt;&gt;&gt; </span>   <span class="s2">&quot;bids&quot;</span><span class="p">:</span> <span class="p">{</span>
+<span class="gp">&gt;&gt;&gt; </span>     <span class="s2">&quot;3b0f1225-7f84-490b-a29f-0faef9de823a&quot;</span><span class="p">:</span> <span class="p">{</span>
+<span class="gp">&gt;&gt;&gt; </span>       <span class="s2">&quot;price&quot;</span><span class="p">:</span> <span class="s2">&quot;295.96&quot;</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>       <span class="s2">&quot;size&quot;</span><span class="p">:</span> <span class="s2">&quot;0.05088265&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span>     <span class="p">},</span>
+<span class="gp">&gt;&gt;&gt; </span>     <span class="o">...</span>
+<span class="gp">&gt;&gt;&gt; </span>   <span class="p">},</span>
+<span class="gp">&gt;&gt;&gt; </span>   <span class="s2">&quot;sequence&quot;</span><span class="p">:</span> <span class="mi">3</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">}</span>
+</pre></div>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>ws_uri</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; WebSocket URI.</li>
+<li><strong>api_url</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; Coinbase Exchange REST API URI.</li>
+<li><strong>product_id</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; the product of interest</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="cbexchange.orderbook.OrderBook.end">
+<code class="descname">end</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cbexchange/orderbook.html#OrderBook.end"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cbexchange.orderbook.OrderBook.end" title="Permalink to this definition">¶</a></dt>
+<dd><p>Makes sure the real-time thread dies and the WebSocket disconnects.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cbexchange.orderbook.OrderBook.get_order_book">
+<code class="descname">get_order_book</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cbexchange/orderbook.html#OrderBook.get_order_book"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cbexchange.orderbook.OrderBook.get_order_book" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the Real-Time Order Book.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">the Real-Time Order Book</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="http://docs.python.org/2.7/library/stdtypes.html#dict" title="(in Python v2.7)">dict</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="cbexchange.orderbook.OrderBook.pause">
+<code class="descname">pause</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cbexchange/orderbook.html#OrderBook.pause"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cbexchange.orderbook.OrderBook.pause" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stops real-time updates until resume is called.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cbexchange.orderbook.OrderBook.resume">
+<code class="descname">resume</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cbexchange/orderbook.html#OrderBook.resume"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cbexchange.orderbook.OrderBook.resume" title="Permalink to this definition">¶</a></dt>
+<dd><p>Resumes real-time updates.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-cbexchange.private">
+<span id="private"></span><h2>private<a class="headerlink" href="#module-cbexchange.private" title="Permalink to this headline">¶</a></h2>
+<dl class="docutils">
+<dt>Private endpoints are available for order management, and account management.</dt>
+<dd><p class="first">Every private request must be signed using the described authentication 
+scheme.</p>
+<p class="last">Find more here: <a class="reference external" href="https://docs.exchange.coinbase.com/#private">https://docs.exchange.coinbase.com/#private</a></p>
+</dd>
+</dl>
+<span class="target" id="module-private"></span><dl class="class">
+<dt id="cbexchange.private.CancelAllPagination">
+<em class="property">class </em><code class="descclassname">cbexchange.private.</code><code class="descname">CancelAllPagination</code><span class="sig-paren">(</span><em>product_id</em>, <em>auth</em>, <em>api_uri=None</em>, <em>before=True</em>, <em>limit=None</em>, <em>cursor=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cbexchange/private.html#CancelAllPagination"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cbexchange.private.CancelAllPagination" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="https://docs.exchange.coinbase.com/#cancel-all">https://docs.exchange.coinbase.com/#cancel-all</a></p>
+</dd></dl>
+
+<dl class="class">
+<dt id="cbexchange.private.CoinbaseExchangeAuth">
+<em class="property">class </em><code class="descclassname">cbexchange.private.</code><code class="descname">CoinbaseExchangeAuth</code><span class="sig-paren">(</span><em>api_key</em>, <em>secret_key</em>, <em>passphrase</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cbexchange/private.html#CoinbaseExchangeAuth"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cbexchange.private.CoinbaseExchangeAuth" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="https://docs.exchange.coinbase.com/#authentication">https://docs.exchange.coinbase.com/#authentication</a></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>api_key</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; the API Key</li>
+<li><strong>secret_key</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; the base64-encoded signature</li>
+<li><strong>passphrase</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; the passphrase you specified when creating the API key</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="class">
+<dt id="cbexchange.private.GetAccountHistoryPagination">
+<em class="property">class </em><code class="descclassname">cbexchange.private.</code><code class="descname">GetAccountHistoryPagination</code><span class="sig-paren">(</span><em>account_id</em>, <em>auth</em>, <em>api_uri=None</em>, <em>before=True</em>, <em>limit=None</em>, <em>cursor=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cbexchange/private.html#GetAccountHistoryPagination"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cbexchange.private.GetAccountHistoryPagination" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="https://docs.exchange.coinbase.com/#get-account-history">https://docs.exchange.coinbase.com/#get-account-history</a></p>
+</dd></dl>
+
+<dl class="class">
+<dt id="cbexchange.private.GetHoldsPagination">
+<em class="property">class </em><code class="descclassname">cbexchange.private.</code><code class="descname">GetHoldsPagination</code><span class="sig-paren">(</span><em>account_id</em>, <em>auth</em>, <em>api_uri=None</em>, <em>before=True</em>, <em>limit=None</em>, <em>cursor=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cbexchange/private.html#GetHoldsPagination"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cbexchange.private.GetHoldsPagination" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="https://docs.exchange.coinbase.com/#get-holds">https://docs.exchange.coinbase.com/#get-holds</a></p>
+</dd></dl>
+
+<dl class="class">
+<dt id="cbexchange.private.ListAccountsPagination">
+<em class="property">class </em><code class="descclassname">cbexchange.private.</code><code class="descname">ListAccountsPagination</code><span class="sig-paren">(</span><em>auth</em>, <em>api_uri=None</em>, <em>before=True</em>, <em>limit=None</em>, <em>cursor=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cbexchange/private.html#ListAccountsPagination"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cbexchange.private.ListAccountsPagination" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="https://docs.exchange.coinbase.com/#selecting-a-timestamp">https://docs.exchange.coinbase.com/#selecting-a-timestamp</a></p>
+</dd></dl>
+
+<dl class="class">
+<dt id="cbexchange.private.ListFillsPagination">
+<em class="property">class </em><code class="descclassname">cbexchange.private.</code><code class="descname">ListFillsPagination</code><span class="sig-paren">(</span><em>auth</em>, <em>api_uri=None</em>, <em>before=True</em>, <em>limit=None</em>, <em>cursor=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cbexchange/private.html#ListFillsPagination"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cbexchange.private.ListFillsPagination" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="https://docs.exchange.coinbase.com/#list-fills">https://docs.exchange.coinbase.com/#list-fills</a></p>
+</dd></dl>
+
+<dl class="class">
+<dt id="cbexchange.private.ListOrdersPagination">
+<em class="property">class </em><code class="descclassname">cbexchange.private.</code><code class="descname">ListOrdersPagination</code><span class="sig-paren">(</span><em>auth</em>, <em>status=None</em>, <em>api_uri=None</em>, <em>before=True</em>, <em>limit=None</em>, <em>cursor=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cbexchange/private.html#ListOrdersPagination"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cbexchange.private.ListOrdersPagination" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="https://docs.exchange.coinbase.com/#list-orders">https://docs.exchange.coinbase.com/#list-orders</a></p>
+</dd></dl>
+
+<dl class="class">
+<dt id="cbexchange.private.PrivateClient">
+<em class="property">class </em><code class="descclassname">cbexchange.private.</code><code class="descname">PrivateClient</code><span class="sig-paren">(</span><em>auth</em>, <em>api_uri=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cbexchange/private.html#PrivateClient"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cbexchange.private.PrivateClient" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="https://docs.exchange.coinbase.com/#authentication">https://docs.exchange.coinbase.com/#authentication</a></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>auth</strong> (<a class="reference internal" href="#cbexchange.private.CoinbaseExchangeAuth" title="cbexchange.private.CoinbaseExchangeAuth"><em>CoinbaseExchangeAuth</em></a>) &#8211; authentication for the Private API</li>
+<li><strong>api_uri</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; Coinbase Exchange REST API URI</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="cbexchange.private.PrivateClient.cancel_all">
+<code class="descname">cancel_all</code><span class="sig-paren">(</span><em>product_id=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cbexchange/private.html#PrivateClient.cancel_all"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cbexchange.private.PrivateClient.cancel_all" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="https://docs.exchange.coinbase.com/#cancel-all">https://docs.exchange.coinbase.com/#cancel-all</a></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cbexchange.private.PrivateClient.cancel_order">
+<code class="descname">cancel_order</code><span class="sig-paren">(</span><em>order_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cbexchange/private.html#PrivateClient.cancel_order"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cbexchange.private.PrivateClient.cancel_order" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="https://docs.exchange.coinbase.com/#cancel-an-order">https://docs.exchange.coinbase.com/#cancel-an-order</a></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cbexchange.private.PrivateClient.deposit">
+<code class="descname">deposit</code><span class="sig-paren">(</span><em>amount</em>, <em>coinbase_account_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cbexchange/private.html#PrivateClient.deposit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cbexchange.private.PrivateClient.deposit" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="https://docs.exchange.coinbase.com/#depositwithdraw">https://docs.exchange.coinbase.com/#depositwithdraw</a></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cbexchange.private.PrivateClient.get_account">
+<code class="descname">get_account</code><span class="sig-paren">(</span><em>account_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cbexchange/private.html#PrivateClient.get_account"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cbexchange.private.PrivateClient.get_account" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="https://docs.exchange.coinbase.com/#get-an-account">https://docs.exchange.coinbase.com/#get-an-account</a></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cbexchange.private.PrivateClient.get_account_history">
+<code class="descname">get_account_history</code><span class="sig-paren">(</span><em>account_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cbexchange/private.html#PrivateClient.get_account_history"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cbexchange.private.PrivateClient.get_account_history" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="https://docs.exchange.coinbase.com/#get-account-history">https://docs.exchange.coinbase.com/#get-account-history</a></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cbexchange.private.PrivateClient.get_holds">
+<code class="descname">get_holds</code><span class="sig-paren">(</span><em>account_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cbexchange/private.html#PrivateClient.get_holds"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cbexchange.private.PrivateClient.get_holds" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="https://docs.exchange.coinbase.com/#get-holds">https://docs.exchange.coinbase.com/#get-holds</a></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cbexchange.private.PrivateClient.get_order">
+<code class="descname">get_order</code><span class="sig-paren">(</span><em>order_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cbexchange/private.html#PrivateClient.get_order"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cbexchange.private.PrivateClient.get_order" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="https://docs.exchange.coinbase.com/#get-an-order">https://docs.exchange.coinbase.com/#get-an-order</a></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cbexchange.private.PrivateClient.get_report_status">
+<code class="descname">get_report_status</code><span class="sig-paren">(</span><em>report_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cbexchange/private.html#PrivateClient.get_report_status"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cbexchange.private.PrivateClient.get_report_status" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="https://docs.exchange.coinbase.com/#get-report-status">https://docs.exchange.coinbase.com/#get-report-status</a></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cbexchange.private.PrivateClient.list_accounts">
+<code class="descname">list_accounts</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cbexchange/private.html#PrivateClient.list_accounts"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cbexchange.private.PrivateClient.list_accounts" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="https://docs.exchange.coinbase.com/#selecting-a-timestamp">https://docs.exchange.coinbase.com/#selecting-a-timestamp</a></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cbexchange.private.PrivateClient.list_fills">
+<code class="descname">list_fills</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cbexchange/private.html#PrivateClient.list_fills"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cbexchange.private.PrivateClient.list_fills" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="https://docs.exchange.coinbase.com/#list-fills">https://docs.exchange.coinbase.com/#list-fills</a></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cbexchange.private.PrivateClient.list_orders">
+<code class="descname">list_orders</code><span class="sig-paren">(</span><em>status=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cbexchange/private.html#PrivateClient.list_orders"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cbexchange.private.PrivateClient.list_orders" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="https://docs.exchange.coinbase.com/#list-orders">https://docs.exchange.coinbase.com/#list-orders</a></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cbexchange.private.PrivateClient.new_accounts_report">
+<code class="descname">new_accounts_report</code><span class="sig-paren">(</span><em>start_date</em>, <em>end_date</em>, <em>account_id</em>, <em>product_id='BTC-USD'</em>, <em>format=None</em>, <em>email=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cbexchange/private.html#PrivateClient.new_accounts_report"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cbexchange.private.PrivateClient.new_accounts_report" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="https://docs.exchange.coinbase.com/#create-a-new-report">https://docs.exchange.coinbase.com/#create-a-new-report</a></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cbexchange.private.PrivateClient.new_fills_report">
+<code class="descname">new_fills_report</code><span class="sig-paren">(</span><em>start_date</em>, <em>end_date</em>, <em>account_id=None</em>, <em>product_id='BTC-USD'</em>, <em>format=None</em>, <em>email=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cbexchange/private.html#PrivateClient.new_fills_report"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cbexchange.private.PrivateClient.new_fills_report" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="https://docs.exchange.coinbase.com/#create-a-new-report">https://docs.exchange.coinbase.com/#create-a-new-report</a></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cbexchange.private.PrivateClient.place_limit_order">
+<code class="descname">place_limit_order</code><span class="sig-paren">(</span><em>side</em>, <em>price</em>, <em>size</em>, <em>product_id='BTC-USD'</em>, <em>client_oid=None</em>, <em>stp=None</em>, <em>time_in_force=None</em>, <em>cancel_after=None</em>, <em>post_only=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cbexchange/private.html#PrivateClient.place_limit_order"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cbexchange.private.PrivateClient.place_limit_order" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="https://docs.exchange.coinbase.com/#orders">https://docs.exchange.coinbase.com/#orders</a></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cbexchange.private.PrivateClient.place_market_order">
+<code class="descname">place_market_order</code><span class="sig-paren">(</span><em>side</em>, <em>product_id='BTC-USD'</em>, <em>size=None</em>, <em>funds=None</em>, <em>client_oid=None</em>, <em>stp=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cbexchange/private.html#PrivateClient.place_market_order"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cbexchange.private.PrivateClient.place_market_order" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="https://docs.exchange.coinbase.com/#orders">https://docs.exchange.coinbase.com/#orders</a></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cbexchange.private.PrivateClient.withdraw">
+<code class="descname">withdraw</code><span class="sig-paren">(</span><em>amount</em>, <em>coinbase_account_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cbexchange/private.html#PrivateClient.withdraw"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cbexchange.private.PrivateClient.withdraw" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="https://docs.exchange.coinbase.com/#depositwithdraw">https://docs.exchange.coinbase.com/#depositwithdraw</a></p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-cbexchange.websock">
+<span id="websock"></span><h2>websock<a class="headerlink" href="#module-cbexchange.websock" title="Permalink to this headline">¶</a></h2>
+<dl class="docutils">
+<dt>The WebSocket Feed provides real-time market data updates for orders and</dt>
+<dd><p class="first">trades.</p>
+<p class="last">Find more here: <a class="reference external" href="https://docs.exchange.coinbase.com/#websocket-feed">https://docs.exchange.coinbase.com/#websocket-feed</a></p>
+</dd>
+</dl>
+<span class="target" id="module-websock"></span><dl class="class">
+<dt id="cbexchange.websock.WSClient">
+<em class="property">class </em><code class="descclassname">cbexchange.websock.</code><code class="descname">WSClient</code><span class="sig-paren">(</span><em>ws_uri=None</em>, <em>ws_type=None</em>, <em>ws_product_id=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cbexchange/websock.html#WSClient"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cbexchange.websock.WSClient" title="Permalink to this definition">¶</a></dt>
+<dd><p>API Client for Coinbase Exchange WebSocket Feed.</p>
+<p>This class starts in a disconnected state so make sure to connect before
+attempting to receive any messages.  When using the &#8216;with&#8217; statement the
+client connects and disconnects automatically.</p>
+<p>Once connected the client starts a thread which keeps the WebSocket alive 
+using periodic pings. There will be only one keep alive thread per client
+instance. If the WebSocket connection is somehow lost, the keep alive thread 
+will clean up and exit.</p>
+<p>The client is iterable over the messages in the feed:</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">cbexchange.websock</span> <span class="kn">import</span> <span class="n">WSClient</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">client</span> <span class="o">=</span> <span class="n">WSClient</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">client</span><span class="o">.</span><span class="n">connect</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">message</span> <span class="ow">in</span> <span class="n">client</span><span class="p">:</span>
+<span class="gp">&gt;&gt;&gt; </span>  <span class="k">print</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The client supports the &#8216;with&#8217; statment:</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">cbexchange.websock</span> <span class="kn">import</span> <span class="n">WSClient</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">with</span> <span class="n">WSClient</span><span class="p">()</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
+<span class="gp">&gt;&gt;&gt; </span>  <span class="k">print</span><span class="p">(</span><span class="n">client</span><span class="o">.</span><span class="n">receive</span><span class="p">())</span>
+</pre></div>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>ws_uri</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; WebSocket URI.</li>
+<li><strong>ws_type</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; <a class="reference external" href="https://docs.exchange.coinbase.com/#subscribe">https://docs.exchange.coinbase.com/#subscribe</a></li>
+<li><strong>ws_product_id</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; <p><a class="reference external" href="https://docs.exchange.coinbase.com/#subscribe">https://docs.exchange.coinbase.com/#subscribe</a></p>
+</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="cbexchange.websock.WSClient.connect">
+<code class="descname">connect</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cbexchange/websock.html#WSClient.connect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cbexchange.websock.WSClient.connect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Connects and subscribes to the WebSocket Feed.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cbexchange.websock.WSClient.connected">
+<code class="descname">connected</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cbexchange/websock.html#WSClient.connected"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cbexchange.websock.WSClient.connected" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks if we are connected to the WebSocket Feed.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">True if connected, otherwise False</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="http://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)">bool</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="cbexchange.websock.WSClient.disconnect">
+<code class="descname">disconnect</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cbexchange/websock.html#WSClient.disconnect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cbexchange.websock.WSClient.disconnect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Disconnects from the WebSocket Feed.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cbexchange.websock.WSClient.next">
+<code class="descname">next</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cbexchange.websock.WSClient.next" title="Permalink to this definition">¶</a></dt>
+<dd><p>Iterator function for Python 3.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">the next message in the sequence</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="http://docs.python.org/2.7/library/stdtypes.html#dict" title="(in Python v2.7)">dict</a></td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><strong>StopIteration</strong> &#8211; if the WebSocket is not connected</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="cbexchange.websock.WSClient.receive">
+<code class="descname">receive</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cbexchange/websock.html#WSClient.receive"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cbexchange.websock.WSClient.receive" title="Permalink to this definition">¶</a></dt>
+<dd><p>Receive the next message in the sequence.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">the next message in the sequence, None if not connected</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="http://docs.python.org/2.7/library/stdtypes.html#dict" title="(in Python v2.7)">dict</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="index.html" class="btn btn-neutral" title="Welcome to CBExchange’s documentation!" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016, Alexander Simeonov.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'1.0.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

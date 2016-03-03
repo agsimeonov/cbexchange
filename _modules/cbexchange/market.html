@@ -1,0 +1,305 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>cbexchange.market &mdash; CBExchange 1.0.0 documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="CBExchange 1.0.0 documentation" href="../../index.html"/>
+        <link rel="up" title="Module code" href="../index.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> CBExchange
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../cbexchange.html">Documentation</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../../index.html">CBExchange</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+      
+    <li>cbexchange.market</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for cbexchange.market</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;The Market Data API is an unauthenticated set of endpoints for retrieving </span>
+<span class="sd">   market data. These endpoints provide snapshots of market data. </span>
+<span class="sd">   </span>
+<span class="sd">   Find more here: `&lt;https://docs.exchange.coinbase.com/#market-data&gt;`_</span>
+
+<span class="sd">.. module:: market</span>
+<span class="sd">   :synopsis: Market Data API</span>
+
+<span class="sd">.. moduleauthor:: Alexander Simeonov &lt;agsimeon@buffalo.edu&gt;</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">requests</span> <span class="kn">import</span> <span class="n">get</span>
+
+<span class="kn">from</span> <span class="nn">cbexchange.client</span> <span class="kn">import</span> <span class="n">RESTClient</span><span class="p">,</span> <span class="n">PaginationClient</span>
+
+<span class="c1"># Levels for Get Product Order Book</span>
+<span class="n">LEVEL_BEST</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">LEVEL_TOP</span>  <span class="o">=</span> <span class="mi">2</span>
+<span class="n">LEVEL_FULL</span> <span class="o">=</span> <span class="mi">3</span>
+
+
+<span class="k">class</span> <span class="nc">MarketClient</span><span class="p">(</span><span class="n">RESTClient</span><span class="p">):</span>
+  <span class="k">def</span> <span class="nf">_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method</span><span class="p">,</span> <span class="o">*</span><span class="n">relative_path_parts</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Sends an HTTP request to the REST API and receives the requested data.</span>
+
+<span class="sd">    :param str method: HTTP method name</span>
+<span class="sd">    :param relative_path_parts: the relative paths for the request URI</span>
+<span class="sd">    :param kwargs: argument keywords</span>
+<span class="sd">    :returns: requested data</span>
+<span class="sd">    :raises APIError: for non-2xx responses</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">uri</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_api_uri</span><span class="p">(</span><span class="o">*</span><span class="n">relative_path_parts</span><span class="p">)</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">get</span><span class="p">(</span><span class="n">uri</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;params&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">))</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_handle_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+
+  <span class="k">def</span> <span class="nf">get_products</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;`&lt;https://docs.exchange.coinbase.com/#get-products&gt;`_&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get</span><span class="p">(</span><span class="s1">&#39;products&#39;</span><span class="p">)</span>
+
+  <span class="k">def</span> <span class="nf">get_product_order_book</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">product_id</span><span class="o">=</span><span class="s1">&#39;BTC-USD&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;`&lt;https://docs.exchange.coinbase.com/#get-product-order-book&gt;`_&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get</span><span class="p">(</span><span class="s1">&#39;products&#39;</span><span class="p">,</span> <span class="n">product_id</span><span class="p">,</span> <span class="s1">&#39;book&#39;</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;level&#39;</span><span class="p">:</span><span class="n">level</span><span class="p">})</span>
+
+  <span class="k">def</span> <span class="nf">get_product_ticker</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">product_id</span><span class="o">=</span><span class="s1">&#39;BTC-USD&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;`&lt;https://docs.exchange.coinbase.com/#get-product-ticker&gt;`_&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get</span><span class="p">(</span><span class="s1">&#39;products&#39;</span><span class="p">,</span> <span class="n">product_id</span><span class="p">,</span> <span class="s1">&#39;ticker&#39;</span><span class="p">)</span>
+
+  <span class="k">def</span> <span class="nf">get_trades</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">product_id</span><span class="o">=</span><span class="s1">&#39;BTC-USD&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;`&lt;https://docs.exchange.coinbase.com/#get-trades&gt;`_&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get</span><span class="p">(</span><span class="s1">&#39;products&#39;</span><span class="p">,</span> <span class="n">product_id</span><span class="p">,</span> <span class="s1">&#39;trades&#39;</span><span class="p">)</span>
+
+  <span class="k">def</span> <span class="nf">get_historic_trades</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="n">granularity</span><span class="p">,</span> <span class="n">product_id</span><span class="o">=</span><span class="s1">&#39;BTC-USD&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;`&lt;https://docs.exchange.coinbase.com/#get-historic-rates&gt;`_</span>
+
+<span class="sd">    :param start: either datetime.datetime or str in ISO 8601</span>
+<span class="sd">    :param end: either datetime.datetime or str in ISO 8601</span>
+<span class="sd">    :pram int granularity: desired timeslice in seconds</span>
+<span class="sd">    :returns: desired data</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">params</span> <span class="o">=</span> <span class="p">{</span>
+      <span class="s1">&#39;start&#39;</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">_format_iso_time</span><span class="p">(</span><span class="n">start</span><span class="p">),</span>
+      <span class="s1">&#39;end&#39;</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">_format_iso_time</span><span class="p">(</span><span class="n">end</span><span class="p">),</span>
+      <span class="s1">&#39;granularity&#39;</span><span class="p">:</span><span class="n">granularity</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get</span><span class="p">(</span><span class="s1">&#39;products&#39;</span><span class="p">,</span> <span class="n">product_id</span><span class="p">,</span> <span class="s1">&#39;candles&#39;</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">)</span>
+
+  <span class="k">def</span> <span class="nf">get_stats</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">product_id</span><span class="o">=</span><span class="s1">&#39;BTC-USD&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;`&lt;https://docs.exchange.coinbase.com/#get-24hr-stats&gt;`_&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get</span><span class="p">(</span><span class="s1">&#39;products&#39;</span><span class="p">,</span> <span class="n">product_id</span><span class="p">,</span> <span class="s1">&#39;stats&#39;</span><span class="p">)</span>
+
+  <span class="k">def</span> <span class="nf">get_currencies</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;`&lt;https://docs.exchange.coinbase.com/#get-currencies&gt;`_&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get</span><span class="p">(</span><span class="s1">&#39;currencies&#39;</span><span class="p">)</span>
+
+  <span class="k">def</span> <span class="nf">get_time</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;`&lt;https://docs.exchange.coinbase.com/#time&gt;`_&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get</span><span class="p">(</span><span class="s1">&#39;time&#39;</span><span class="p">)</span>
+
+<span class="k">class</span> <span class="nc">MarketPaginationClient</span><span class="p">(</span><span class="n">PaginationClient</span><span class="p">):</span>
+  <span class="k">def</span> <span class="nf">_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method</span><span class="p">,</span> <span class="o">*</span><span class="n">relative_path_parts</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Sends an HTTP request to the REST API and receives the requested data.</span>
+<span class="sd">    Additionally sets up pagination cursors.</span>
+
+<span class="sd">    :param str method: HTTP method name</span>
+<span class="sd">    :param relative_path_parts: the relative paths for the request URI</span>
+<span class="sd">    :param kwargs: argument keywords</span>
+<span class="sd">    :returns: requested data</span>
+<span class="sd">    :raises APIError: for non-2xx responses</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">uri</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_api_uri</span><span class="p">(</span><span class="o">*</span><span class="n">relative_path_parts</span><span class="p">)</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">get</span><span class="p">(</span><span class="n">uri</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_params</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">))</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">is_initial</span> <span class="o">=</span> <span class="bp">False</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">before_cursor</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;cb-before&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">after_cursor</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;cb-after&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_handle_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+
+<div class="viewcode-block" id="GetTradesPagination"><a class="viewcode-back" href="../../cbexchange.html#cbexchange.market.GetTradesPagination">[docs]</a><span class="k">class</span> <span class="nc">GetTradesPagination</span><span class="p">(</span><span class="n">MarketPaginationClient</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot;`&lt;https://docs.exchange.coinbase.com/#get-trades&gt;`_&quot;&quot;&quot;</span>
+  <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+               <span class="n">product_id</span><span class="o">=</span><span class="s1">&#39;BTC-USD&#39;</span><span class="p">,</span>
+               <span class="n">api_uri</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+               <span class="n">before</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+               <span class="n">limit</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+               <span class="n">cursor</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="nb">super</span><span class="p">(</span><span class="n">GetTradesPagination</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">api_uri</span><span class="p">,</span> <span class="n">before</span><span class="p">,</span> <span class="n">limit</span><span class="p">,</span> <span class="n">cursor</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">product_id</span> <span class="o">=</span> <span class="n">product_id</span>
+
+  <span class="k">def</span> <span class="nf">endpoint</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_next</span><span class="p">():</span>
+      <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get</span><span class="p">(</span><span class="s1">&#39;products&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">product_id</span><span class="p">,</span> <span class="s1">&#39;trades&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+      <span class="k">return</span> <span class="bp">None</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016, Alexander Simeonov.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'1.0.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>
