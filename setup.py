@@ -2,7 +2,7 @@ from distutils.core import setup
 setup(
   name = 'cbexchange',
   packages = ['cbexchange'],
-  version = '1.0.0',
+  version = '1.0.1',
   description = 'CBExchange - Coinbase Exchange Python API',
   author = 'Alexander Simeonov',
   author_email = 'agsimeon@buffalo.edu',
