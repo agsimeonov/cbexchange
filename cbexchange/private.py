@@ -9,7 +9,7 @@ Find more here: `<https://docs.exchange.coinbase.com/#private>`_
 .. moduleauthor:: Alexander Simeonov <agsimeon@buffalo.edu>
 
 """
-from base64 import b64decode
+from base64 import b64decode, b64encode
 from hashlib import sha256
 from hmac import new
 from time import time
@@ -41,20 +41,20 @@ class CoinbaseExchangeAuth(AuthBase):
 
   def __call__(self, request):
     timestamp = str(time())
-    message = timestamp        + \
-              request.method   + \
-              request.path_url + \
-              (request.body or '')
-    hmac_key = b64decode(self.secret_key)
-    signature = new(hmac_key, message, sha256)
-    signature_b64 = signature.digest().encode('base64').rstrip('\n')
+    message = timestamp + request.method + request.path_url + (request.body or '')
+
+    signature = new(b64decode(self.secret_key),
+                    msg=message.encode(),
+                    digestmod=sha256).digest()
+
+    signature_b64 = b64encode(signature)
 
     request.headers.update({
-      'CB-ACCESS-SIGN':signature_b64,
-      'CB-ACCESS-TIMESTAMP':timestamp,
-      'CB-ACCESS-KEY':self.api_key,
-      'CB-ACCESS-PASSPHRASE':self.passphrase,
-      'Content-Type':'application/json'
+      'CB-ACCESS-SIGN': signature_b64,
+      'CB-ACCESS-TIMESTAMP': timestamp,
+      'CB-ACCESS-KEY': self.api_key,
+      'CB-ACCESS-PASSPHRASE': self.passphrase,
+      'Content-Type': 'application/json'
     })
 
     return request
