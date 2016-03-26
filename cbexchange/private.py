@@ -25,7 +25,6 @@ STATUS_OPEN    = 'open'
 STATUS_PENDING = 'pending'
 
 
-
 class CoinbaseExchangeAuth(AuthBase):
   """`<https://docs.exchange.coinbase.com/#authentication>`_
 
@@ -41,20 +40,20 @@ class CoinbaseExchangeAuth(AuthBase):
 
   def __call__(self, request):
     timestamp = str(time())
-    message = timestamp + request.method + request.path_url + (request.body or '')
+    msg = timestamp + request.method + request.path_url + (request.body or '')
 
     signature = new(b64decode(self.secret_key),
-                    msg=message.encode(),
+                    msg=msg.encode(),
                     digestmod=sha256).digest()
 
     signature_b64 = b64encode(signature)
 
     request.headers.update({
-      'CB-ACCESS-SIGN': signature_b64,
-      'CB-ACCESS-TIMESTAMP': timestamp,
-      'CB-ACCESS-KEY': self.api_key,
-      'CB-ACCESS-PASSPHRASE': self.passphrase,
-      'Content-Type': 'application/json'
+      'CB-ACCESS-SIGN':signature_b64,
+      'CB-ACCESS-TIMESTAMP':timestamp,
+      'CB-ACCESS-KEY':self.api_key,
+      'CB-ACCESS-PASSPHRASE':self.passphrase,
+      'Content-Type':'application/json'
     })
 
     return request
